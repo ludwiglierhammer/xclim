@@ -29,6 +29,7 @@ __all__ = [
     "pint_multiply",
     "pint2cfunits",
     "rate2amount",
+    "shared_time_freq",
     "str2pint",
     "to_agg_units",
     "units",
@@ -531,7 +532,7 @@ def check_units(val: Optional[Union[str, int, float]], dim: Optional[str]) -> No
         dim = str2pint(dim)
         expected = dim.dimensionality
     except pint.UndefinedUnitError:
-        # Raised when it is not understood, we assume it was a dimensionlity
+        # Raised when it is not understood, we assume it was a dimensionality
         expected = units.get_dimensionality(dim.replace("dimensionless", ""))
 
     if isinstance(val, str):
@@ -613,6 +614,45 @@ def declare_units(
             return out
 
         setattr(wrapper, "in_units", units_by_name)
+        return wrapper
+
+    return dec
+
+
+def shared_time_freq(
+    *variables,
+) -> Callable:
+    def dec(func):
+        sig = signature(func)
+
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            out = func(*args, **kwargs)
+
+            bound_args = sig.bind(*args, **kwargs)
+            times = dict()
+            for name, val in bound_args.arguments.items():
+                if name in variables:
+                    times[name] = xr.infer_freq(val.time)
+
+            if times:
+                if len(set(times.values())) > 1:
+                    raise ValidationError(
+                        f"Time units for {' and '.join(times.keys())} are not identical: "
+                        f"found {', '.join(times.keys())}."
+                    )
+                if len(variables) != len(times.keys()):
+                    raise ValidationError(
+                        "Not all variable time units were found. "
+                        f"Missing {set(variables).difference(set(times.keys()))}."
+                    )
+            else:
+                raise ValidationError(
+                    f"No time units found for {' and '.join(variables)}."
+                )
+
+            return out
+
         return wrapper
 
     return dec

@@ -14,6 +14,7 @@ from xclim.core.units import (
     infer_sampling_units,
     pint2cfunits,
     rate2amount,
+    shared_time_freq,
     str2pint,
     to_agg_units,
 )
@@ -465,6 +466,7 @@ def daily_freezethaw_cycles(
     thresh_tasmin="[temperature]",
     thresh_tasmax="[temperature]",
 )
+@shared_time_freq("tasmin", "tasmax")
 def multiday_temperature_swing(
     tasmin: xarray.DataArray,
     tasmax: xarray.DataArray,
