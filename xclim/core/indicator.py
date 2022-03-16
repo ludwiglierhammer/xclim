@@ -126,7 +126,7 @@ from .locales import (
     read_locale_file,
 )
 from .options import METADATA_LOCALES, MISSING_METHODS, MISSING_OPTIONS, OPTIONS
-from .units import check_units, convert_units_to, declare_units, units
+from .units import check_units, convert_units_to, declare_units, str2pint
 from .utils import (
     VARIABLES,
     InputKind,
@@ -1148,11 +1148,16 @@ class Indicator(IndicatorRegistrar):
         mba = {}
         # Add formatting {} around values to be able to replace them with _attrs_mapping using format.
         for k, v in args.items():
-            if isinstance(v, units.Quantity):
-                mba[k] = f"{v:g~P}"
-            elif isinstance(v, (int, float)):
-                mba[k] = f"{v:g}"
-            # TODO: What about InputKind.NUMBER_SEQUENCE
+            p = cls._all_parameters[k]
+            if p.kind == InputKind.QUANTITY_STR and isinstance(v, str):
+                # We convert to a Quantity, so the formatting can be controlled.
+                mba[k] = str2pint(v)
+            # elif isinstance(v, (int, float)):  Is this needed? Leave it so it can be controlled by the indicator's creator?
+            #    mba[k] = f"{v:g}"
+            elif isinstance(v, (list, tuple, np.ndarray)) and isinstance(
+                v[0], (int, float)
+            ):
+                mba[k] = ", ".join([f"{vv:g}" for vv in v])
             elif k == "indexer":
                 if v and v not in [_empty, _empty_default]:
                     dk, dv = v.copy().popitem()
@@ -1163,7 +1168,7 @@ class Indicator(IndicatorRegistrar):
                     mba["indexer"] = dv
                 else:
                     mba["indexer"] = args.get("freq") or "YS"
-            else:
+            else:  # Let the normal formatting be used, this kinda assumes v is a string.
                 mba[k] = v
 
         out = {}
@@ -1174,7 +1179,10 @@ class Indicator(IndicatorRegistrar):
             out[key] = formatter.format(val, **mba)
 
             if key in cls._text_fields:
-                out[key] = out[key].strip().capitalize()
+                out[key] = out[key].strip()
+                out[key] = out[key][0].upper() + out[key][1:]
+            if key == "var_name":
+                out[key] = out[key].replace("-", "m")
 
         return out
 

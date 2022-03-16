@@ -403,7 +403,7 @@ def test_days_over_precip_doy_thresh():
     out2 = atmos.days_over_precip_thresh(pr, per, thresh="2 mm/d")
     np.testing.assert_array_equal(out2[1, :, 0], np.array([81, 61, 66, 78]))
 
-    assert "only days with at least 2 mm/d are counted." in out2.description
+    assert "Only days with at least 2 mm d-1 are counted." in out2.description
 
 
 def test_days_over_precip_thresh():
@@ -431,7 +431,7 @@ def test_fraction_over_precip_doy_thresh():
         out[1, :, 0], np.array([0.831, 0.803, 0.774, 0.833]), atol=0.001
     )
 
-    assert "only days with at least 0.002 m/d are included" in out.description
+    assert "Only days with at least 0.002 m d-1 are included" in out.description
 
 
 def test_fraction_over_precip_thresh():
@@ -461,7 +461,7 @@ def test_liquid_precip_ratio():
         np.testing.assert_allclose(
             out[:, 0], np.array([0.975, 0.921, 0.547, 0.794, 0.999]), atol=1e3
         )
-        assert "where temperature is above 33 degf." in out.description
+        assert "where temperature is above 33 °F." in out.description
 
 
 def test_dry_spell(atmosds):

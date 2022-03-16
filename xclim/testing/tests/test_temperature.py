@@ -360,7 +360,7 @@ class TestConsecutiveFrostFreeDays:
         test = atmos.maximum_consecutive_frost_free_days(tasmin)
         np.testing.assert_allclose(test[2, 0], [68], rtol=1e-1)
         assert (
-            "Annual maximum number of consecutive days with minimum daily temperature above or equal to 0 degc."
+            "Annual maximum number of consecutive days with minimum daily temperature above or equal to 0 °C."
         ) in test.description
 
 
@@ -1210,7 +1210,7 @@ def test_degree_days_exceedance_date():
         sum_thresh="200 K days",
     )
     np.testing.assert_array_equal(out, np.array([[153, 136, 9, 6]]).T)
-    assert "tmean > 4 degc" in out.attrs["description"]
+    assert "Tmean > 4 °C" in out.attrs["description"]
 
     with set_options(check_missing="skip"):
         out = atmos.degree_days_exceedance_date(
@@ -1243,7 +1243,7 @@ def test_maximum_consecutive_warm_days():
     out = atmos.maximum_consecutive_warm_days(tasmax)
     np.testing.assert_array_equal(out[1, :], np.array([13, 21, 6, 10]))
     assert (
-        "Annual longest spell of consecutive days with tmax above 25 degc."
+        "Annual longest spell of consecutive days with Tmax above 25 °C."
         in out.description
     )
 
@@ -1269,9 +1269,7 @@ def test_corn_heat_units():
         chu[0, 180:185], np.array([13.777, 12.368, 11.966, 14.674, 16.797]), rtol=1e-4
     )
 
-    assert (
-        "specific thresholds : tmin > 4.44 degc and tmax > 10 degc." in chu.description
-    )
+    assert "specific thresholds : Tmin > 4.44 °C and Tmax > 10 °C." in chu.description
 
 
 def test_freezethaw_spell_frequency():

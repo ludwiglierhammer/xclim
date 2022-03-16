@@ -42,7 +42,7 @@ uniIndTemp = Daily(
     module="test",
     cf_attrs=[
         dict(
-            var_name="tmin{thresh}",
+            var_name="tmin{thresh.magnitude:g}",
             units="K",
             long_name="{freq} mean surface temperature",
             standard_name="{freq} mean temperature",
@@ -146,7 +146,7 @@ def test_attrs(tas_series):
     assert f"{dt.datetime.now():%Y-%m-%d %H}" in txm.attrs["history"]
     assert "TMIN(da=tas, thresh='5 degC', freq='YS')" in txm.attrs["history"]
     assert f"xclim version: {__version__}" in txm.attrs["history"]
-    assert txm.name == "tmin5 degC"
+    assert txm.name == "tmin5"
     assert uniIndTemp.standard_name == "{freq} mean temperature"
     assert uniIndTemp.cf_attrs[0]["another_attr"] == "With a value."
 
@@ -454,13 +454,13 @@ def test_formatting(pr_series):
     out = atmos.wetdays(pr_series(np.arange(366)), thresh=1.0 * units.mm / units.day)
     # pint 0.10 now pretty print day as d.
     assert out.attrs["long_name"] in [
-        "Number of wet days (precip >= 1 mm/day)",
-        "Number of wet days (precip >= 1 mm/d)",
+        "Number of wet days (precip >= 1 mm d-1)",
+        "Number of wet days (precip >= 1 mm d-1)",
     ]
     out = atmos.wetdays(pr_series(np.arange(366)), thresh=1.5 * units.mm / units.day)
     assert out.attrs["long_name"] in [
-        "Number of wet days (precip >= 1.5 mm/day)",
-        "Number of wet days (precip >= 1.5 mm/d)",
+        "Number of wet days (precip >= 1.5 mm d-1)",
+        "Number of wet days (precip >= 1.5 mm d-1)",
     ]
 
 

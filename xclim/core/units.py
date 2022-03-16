@@ -6,11 +6,12 @@ Units handling submodule
 `Pint` is used to define the `units` `UnitRegistry` and `xclim.units.core` defines
 most unit handling methods.
 """
-import re
 import warnings
+from copy import deepcopy
 from inspect import signature
 from typing import Any, Callable, Optional, Tuple, Union
 
+import cf_xarray.units
 import pint.converters
 import pint.unit
 import xarray as xr
@@ -38,27 +39,17 @@ __all__ = [
 ]
 
 
-units = pint.UnitRegistry(autoconvert_offset_to_baseunit=True, on_redefinition="ignore")
-units.define(
-    pint.unit.UnitDefinition(
-        "percent", "%", ("pct",), pint.converters.ScaleConverter(0.01)
-    )
-)
-# In pint, the default symbol for year is "a" which is not CF-compliant (stands for "are")
-units.define("year = 365.25 * day = yr")
+# Extend the units registry of cf_xarray
+units = deepcopy(cf_xarray.units.units)
 
-# Define commonly encountered units not defined by pint
-units.define("@alias degC = C = deg_C")
-units.define("@alias degK = deg_K")
-units.define("@alias day = d")
-units.define("@alias hour = h")  # Not the Planck constant...
-units.define(
-    "degrees_north = 1 * degree = degrees_north = degrees_N = degreesN = degree_north = degree_N = degreeN"
-)
-units.define(
-    "degrees_east = 1 * degree = degrees_east = degrees_E = degreesE = degree_east = degree_E = degreeE"
-)
-units.define("[speed] = [length] / [time]")
+# Changing the default string format for units/quantities. cf is implemented by cf-xarray
+# g is the most versatile float format.
+units.default_format = "gcf"
+# Switch this flag back to False. Not sure what that implies, but it breaks some tests.
+units.force_ndarray_like = False
+
+# Another alias not included by cf_xarray
+units.define("@alias percent = pct")
 
 # Default context.
 null = pint.Context("none")
@@ -91,18 +82,6 @@ hydro.add_transformation(
 units.add_context(hydro)
 units.enable_contexts(hydro)
 
-# These are the changes that could be included in a units definition file.
-
-# degrees_north = degree = degrees_N = degreesN = degree_north = degree_N = degreeN
-# degrees_east = degree = degrees_E = degreesE = degree_east = degree_E = degreeE
-# degC = kelvin; offset: 273.15 = celsius = C
-# day = 24 * hour = d
-# @context hydro
-#     [mass] / [length]**2 -> [length]: value / 1000 / kg / m ** 3
-#     [mass] / [length]**2 / [time] -> [length] / [time] : value / 1000 / kg * m ** 3
-#     [length] / [time] -> [mass] / [length]**2 / [time] : value * 1000 * kg / m ** 3
-# @end
-
 
 def units2pint(value: Union[xr.DataArray, str, units.Quantity]) -> Unit:
     """Return the pint Unit for the DataArray units.
@@ -117,14 +96,6 @@ def units2pint(value: Union[xr.DataArray, str, units.Quantity]) -> Unit:
     pint.unit.UnitDefinition
       Units of the data array.
     """
-
-    def _transform(s):
-        """Convert a CF-unit string to a pint expression."""
-        if s == "%":
-            return "percent"
-
-        return re.subn(r"([a-zA-Z]+)\^?(-?\d)", r"\g<1>**\g<2>", s)[0]
-
     if isinstance(value, str):
         unit = value
     elif isinstance(value, xr.DataArray):
@@ -133,10 +104,6 @@ def units2pint(value: Union[xr.DataArray, str, units.Quantity]) -> Unit:
         return value.units
     else:
         raise NotImplementedError(f"Value of type `{type(value)}` not supported.")
-
-    unit = unit.replace("%", "pct")
-    if unit == "1":
-        unit = ""
 
     # Catch user errors undetected by Pint
     degree_ex = ["deg", "degree", "degrees"]
@@ -157,20 +124,13 @@ def units2pint(value: Union[xr.DataArray, str, units.Quantity]) -> Unit:
             "Remove white space from temperature units, e.g. use `degC`."
         )
 
-    try:  # Pint compatible
-        return units.parse_units(unit)
-    except (
-        pint.UndefinedUnitError,
-        pint.DimensionalityError,
-        AttributeError,
-        TypeError,
-    ):  # Convert from CF-units to pint-compatible
-        return units.parse_units(_transform(unit))
+    return units.parse_units(unit)
 
 
-# Note: The pint library does not have a generic Unit or Quantity type at the moment. Using "Any" as a stand-in.
 def pint2cfunits(value: UnitDefinition) -> str:
     """Return a CF-compliant unit string from a `pint` unit.
+
+    This is simple wrapper around the "cf" formatter implemented by `cf-xarray`.
 
     Parameters
     ----------
@@ -185,26 +145,8 @@ def pint2cfunits(value: UnitDefinition) -> str:
     if isinstance(value, pint.Quantity):
         value = value.units
 
-    # Print units using abbreviations (millimeter -> mm)
-    s = f"{value:~}"
-
-    # Search and replace patterns
-    pat = r"(?P<inverse>/ )?(?P<unit>\w+)(?: \*\* (?P<pow>\d))?"
-
-    def repl(m):
-        i, u, p = m.groups()
-        p = p or (1 if i else "")
-        neg = "-" if i else ("^" if p else "")
-
-        return f"{u}{neg}{p}"
-
-    out, n = re.subn(pat, repl, s)
-
-    # Remove multiplications
-    out = out.replace(" * ", " ")
-    # Delta degrees:
-    out = out.replace("Δ°", "delta_deg")
-    return out.replace("percent", "%")
+    # The replacement is due to hgrecco/pint#1486
+    return f"{value:cf}".replace("dimensionless", "")
 
 
 def ensure_cf_units(ustr: str) -> str:

@@ -825,7 +825,7 @@ degree_days_exceedance_date = Temp(
     units="",
     standard_name="day_of_year",
     long_name="Day of year when cumulative degree days exceed {sum_thresh}.",
-    description="Day of year when the integral of degree days (tmean {op} {thresh})"
+    description="Day of year when the integral of degree days (Tmean {op} {thresh})"
     " exceeds {sum_thresh}, the cumulative sum starts on {after_date}.",
     cell_methods="",
     compute=indices.degree_days_exceedance_date,

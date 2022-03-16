@@ -38,7 +38,7 @@ def test_var():
         out_season.values, [3.9270796e-09, 1.2538864e-09, 1.9057025e-09, 2.8776632e-09]
     )
     assert out_season.long_name == "Variance"
-    assert out_season.units == "kg^2 m-4 s-2"
+    assert out_season.units == "kg2 m-4 s-2"
 
 
 def test_skewness():
