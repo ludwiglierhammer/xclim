@@ -1877,7 +1877,7 @@ def mean_radiant_temperature(
     rsus = convert_units_to(rsus, "W m-2")
     rlds = convert_units_to(rlds, "W m-2")
     rlus = convert_units_to(rlus, "W m-2")
-
+    
     dates = rsds.time
     hours = ((dates - dates.dt.floor("D")).dt.seconds / 3600).assign_attrs(units="h")
 

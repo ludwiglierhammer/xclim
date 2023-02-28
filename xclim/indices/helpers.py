@@ -237,8 +237,13 @@ def cosine_of_solar_zenith_angle(
     lat = convert_units_to(lat, "rad")
     if lon is not None:
         lon = convert_units_to(lon, "rad")
+        lon = xr.where(lon>np.pi, lon-2*np.pi, lon)
     if hours is not None:
         sha = (hours - 12) * 15 / 180 * np.pi + lon
+        sha_1 = xr.where(sha<=-np.pi, sha+2*np.pi, sha)
+        sha_2 = xr.where(sha>=2*np.pi, sha-2*np.pi, sha)
+        sha = xr.where(sha_1, sha_1, sha)
+        sha = xr.where(sha_2, sha_2, sha)
     if interval is not None:
         k = interval / 2.0
         h_s = sha - k * 15 * np.pi / 180
