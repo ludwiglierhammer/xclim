@@ -75,6 +75,7 @@ default_testdata_repo_url = "https://raw.githubusercontent.com/Ouranosinc/xclim-
 """Default URL of the testing data repository to use when fetching datasets."""
 
 HAS_POOCH = bool(ilu.find_spec("pooch"))
+default_testdata_cache: Path | None
 if HAS_POOCH:
     import pooch
 

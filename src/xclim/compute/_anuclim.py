@@ -429,9 +429,9 @@ def prcptot(pr: xarray.DataArray, thresh: Quantified = "0 mm/d", freq: Freq = "Y
     xarray.DataArray, [length]
        Total {freq} precipitation.
     """
-    thresh = convert_units_to(thresh, pr, context="hydro")
-    pram: xarray.DataArray = rate2amount(pr.where(pr >= thresh, 0))
-    pram = pram.resample(time=freq).sum().assign_attrs(units=pram.units)
+    _thresh: float = convert_units_to(thresh, pr, context="hydro")
+    _pr: xarray.DataArray = rate2amount(pr.where(pr >= thresh, 0))
+    pram = _pr.resample(time=freq).sum().assign_attrs(units=_pr.units)
     return pram
 
 
@@ -565,7 +565,8 @@ def _to_quarter(
             # Ensure units are back to a "rate" for rate2amount below
             pram = rate2amount(ts_var)
             ts_var = statistics(pram, statistic="sum", freq="7D")
-            ts_var = convert_units_to(ts_var, "mm", context="hydro").assign_attrs(units="mm/week")
+            ts_var = convert_units_to(ts_var, "mm", context="hydro")
+            ts_var = ts_var.assign_attrs(units="mm/week")
         freq_upper = "W"
     if freq_upper.startswith("W"):
         window = 13

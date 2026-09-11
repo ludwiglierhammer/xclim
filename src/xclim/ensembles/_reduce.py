@@ -307,7 +307,7 @@ def kmeans_reduce_ensemble(
         )
     """
     if make_graph:
-        fig_data = {}
+        fig_data: dict[str, Any] = {}
         if max_clusters is not None:
             fig_data["max_clusters"] = max_clusters
     else:

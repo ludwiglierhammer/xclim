@@ -1,6 +1,7 @@
 """Exceptions and error handling utilities."""
 
 from __future__ import annotations
+from typing import Literal
 
 import logging
 import warnings
@@ -24,11 +25,11 @@ class MissingVariableError(ValueError):
 
 def raise_warn_or_log(
     err: Exception,
-    mode: str,
+    mode: Literal["ignore", "log", "warn", "raise"],
     msg: str | None = None,
     err_type: type = ValueError,
     stacklevel: int = 1,
-):
+) -> None:
     """
     Raise, warn or log an error according.
 
@@ -45,6 +46,11 @@ def raise_warn_or_log(
         The type of error/exception to raise.
     stacklevel : int
         Stacklevel when warning. Relative to the call of this function (1 is added).
+        
+    Raises
+    ------
+    ValueError
+        If `mode` is not one of ["ignore", "log", "warn", "raise"].
     """
     message = msg or getattr(err, "msg", f"Failed with {err!r}.")
     if mode == "ignore":
@@ -53,5 +59,7 @@ def raise_warn_or_log(
         logger.info(message)
     elif mode == "warn":
         warnings.warn(message, stacklevel=stacklevel + 1)
-    else:  # mode == "raise"
+    elif mode == "raise":
         raise err from err_type(message)
+    else:
+        raise ValueError(f"mode: {mode} is not valid. Must be one of ['ignore', 'log', 'warn', 'raise'].")

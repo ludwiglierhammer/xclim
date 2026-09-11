@@ -7,6 +7,7 @@ Pseudo-indicators designed to analyse supplied variables for suspicious/erroneou
 
 from __future__ import annotations
 
+from typing import Any
 from collections.abc import Callable, Sequence
 from functools import reduce
 from inspect import signature
@@ -29,7 +30,7 @@ from xclim.core.calendar import climatological_mean_doy, within_bnds_doy
 from xclim.core.formatting import update_xclim_history
 from xclim.core.units import convert_units_to, declare_units, infer_context, str2pint
 
-_REGISTRY = {}
+_REGISTRY: dict[str, Callable[..., Any]] = {}
 
 ALL_OPERATORS = Literal[">", "gt", "<", "lt", ">=", "ge", "<=", "le", "==", "eq", "!=", "ne"]
 

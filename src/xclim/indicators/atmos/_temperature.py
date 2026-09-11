@@ -1,6 +1,7 @@
 """Temperature indicator definitions."""
 
 from __future__ import annotations
+from typing import Any
 
 from xarray import DataArray
 
@@ -1718,8 +1719,11 @@ class FireSeasonBase(Indicator):
     """Special Indicator class for FireSeason that accepts any tas[min/max] and optional snd and is not resampling."""
 
     keywords = ["fire"]
+    
+    def cfcheck(self, **das: Any) -> None:
+        self._cfcheck_impl(**das)
 
-    def cfcheck(self, tas: DataArray, snd: DataArray = None):
+    def _cfcheck(self, tas: DataArray | None = None, snd: DataArray | None = None) -> None:
         r"""
         Verify the CF-compliance of the input data.
 
