@@ -69,8 +69,8 @@ def isothermality(tasmin: xarray.DataArray, tasmax: xarray.DataArray, freq: Freq
         Average daily minimum temperature at daily, weekly, or monthly frequency.
     tasmax : xarray.DataArray
         Average daily maximum temperature at daily, weekly, or monthly frequency.
-    freq : str
-        Resampling frequency.
+    freq : Freq
+        Resampling frequency. Default: "YS".
 
     Returns
     -------
@@ -107,8 +107,8 @@ def temperature_seasonality(tas: xarray.DataArray, freq: Freq = "YS") -> xarray.
     ----------
     tas : xarray.DataArray
         Mean temperature at daily, weekly, or monthly frequency.
-    freq : str
-        Resampling frequency.
+    freq : Freq
+        Resampling frequency. Default: "YS".
 
     Returns
     -------
@@ -149,8 +149,8 @@ def precip_seasonality(pr: xarray.DataArray, freq: Freq = "YS") -> xarray.DataAr
     pr : xarray.DataArray
         Total precipitation rate at daily, weekly, or monthly frequency.
         Units need to be defined as a rate (e.g. mm d-1, mm week-1).
-    freq : str
-        Resampling frequency.
+    freq : Freq
+        Resampling frequency. Default: "YS".
 
     Returns
     -------
@@ -197,12 +197,12 @@ def tg_mean_warmcold_quarter(
     ----------
     tas : xarray.DataArray
         Mean temperature at daily, weekly, or monthly frequency.
-    op : {'warmest', 'coldest'}
+    op : {"warmest", "coldest"}
         Operation to perform:
-        'warmest' calculates the warmest quarter.
-        'coldest' calculates the coldest quarter.
-    freq : str
-        Resampling frequency.
+        "warmest" calculates the warmest quarter.
+        "coldest" calculates the coldest quarter.
+    freq : Freq
+        Resampling frequency. Default: "YS".
 
     Returns
     -------
@@ -258,12 +258,12 @@ def tg_mean_wetdry_quarter(
         Mean temperature at daily, weekly, or monthly frequency.
     pr : xarray.DataArray
         Total precipitation rate at daily, weekly, or monthly frequency.
-    op : {"wettest", "driest"}
+    op : {"wettest", "driest", "dryest"}
         Operation to perform:
-        'wettest' calculates the wettest quarter.
-        'driest' calculates the driest quarter.
-    freq : str
-        Resampling frequency.
+        "wettest" calculates the wettest quarter.
+        "driest" or "dryest" calculates the driest quarter.
+    freq : Freq
+        Resampling frequency. Default: "YS".
 
     Returns
     -------
@@ -309,12 +309,12 @@ def prcptot_wetdry_quarter(
     ----------
     pr : xarray.DataArray
         Total precipitation rate at daily, weekly, or monthly frequency.
-    op : {"wettest", "driest"}
+    op : {"wettest", "driest", "dryest"}
         Operation to perform:
-        'wettest' calculates the wettest quarter.
-        'driest' calculates the driest quarter.
-    freq : str
-        Resampling frequency.
+        "wettest" calculates the wettest quarter.
+        "driest" or "dryest" calculates the driest quarter.
+    freq : Freq
+        Resampling frequency. Default: "YS".
 
     Returns
     -------
@@ -372,10 +372,10 @@ def prcptot_warmcold_quarter(
         Mean temperature at daily, weekly, or monthly frequency.
     op : {"warmest", "coldest"}
         Operation to perform:
-        "warmest" calculates for the warmest quarter;
+        "warmest" calculates for the warmest quarter.
         "coldest" calculates for the coldest quarter.
-    freq : str
-        Resampling frequency.
+    freq : Freq
+        Resampling frequency. Default: "YS".
 
     Returns
     -------
@@ -419,10 +419,10 @@ def prcptot(pr: xarray.DataArray, thresh: Quantified = "0 mm/d", freq: Freq = "Y
     ----------
     pr : xarray.DataArray
         Total precipitation flux [mm d-1], [mm week-1], [mm month-1] or similar.
-    thresh : str
-        Threshold over which precipitation starts being cumulated.
-    freq : str
-        Resampling frequency.
+    thresh : Quantified
+        Threshold over which precipitation starts being cumulated. Default: "0 mm/d".
+    freq : Freq
+        Resampling frequency. Default: "YS".
 
     Returns
     -------
@@ -448,12 +448,12 @@ def prcptot_wetdry_period(
     ----------
     pr : xarray.DataArray
         Total precipitation flux [mm d-1], [mm week-1], [mm month-1] or similar.
-    op : {"wettest", "driest"}
+    op : {"wettest", "driest", "dryest"}
         Operation to perform:
         "wettest" calculates the wettest quarter.
-        "driest" calculates the driest quarter.
-    freq : str
-        Resampling frequency.
+        "driest" or "dryest" calculates the driest quarter.
+    freq : Freq
+        Resampling frequency. Default: "YS".
 
     Returns
     -------
@@ -501,7 +501,7 @@ def _from_other_arg(criteria: xarray.DataArray, output: xarray.DataArray, op: Ca
         Series to be indexed.
     op : Callable
         Function returning an index, for example, `np.argmin`, `np.argmax`, `np.nanargmin`, `np.nanargmax`.
-    freq : str
+    freq : Freq
         Temporal grouping.
 
     Returns
