@@ -134,7 +134,7 @@ def rb_flashiness_index(rivo: xarray.DataArray, freq: Freq = "YS") -> xarray.Dat
 )
 def standardized_streamflow_index(
     rivo: xarray.DataArray,
-    freq: Freq | None = "MS",
+    freq: Literal["D", "DS", "DE", "M", "MS", "ME", "W", "WS", "WE"] | None = "MS",
     window: int = 1,
     dist: Literal["genextreme", "fisk"] | rv_continuous = "genextreme",
     method: Literal["ML", "APP", "PWM"] = "ML",
@@ -151,7 +151,7 @@ def standardized_streamflow_index(
     ----------
     rivo : xarray.DataArray
         Rate of river discharge.
-    freq : Freq, optional
+    freq : {"D", "DS", "DE", "M", "MS", "ME", "W", "WS", "WE"}, optional
         Resampling frequency. A monthly or daily frequency is expected. Option `None` assumes
         that the desired resampling has already been applied input dataset and will skip the resampling step.
         Default: "MS".
@@ -252,7 +252,7 @@ def standardized_streamflow_index(
         freq=freq,
         window=window,
         dist=dist,
-        method=method,
+        method=method,  # type: ignore[arg-type]
         zero_inflated=zero_inflated,
         fitkwargs=fitkwargs,
         cal_start=cal_start,
@@ -448,7 +448,7 @@ def melt_and_precip_max(
 )
 def standardized_groundwater_index(
     gwl: xarray.DataArray,
-    freq: Freq | None = "MS",
+    freq: Literal["D", "DS", "DE", "M", "MS", "ME", "W", "WS", "WE"] | None = "MS",
     window: int = 1,
     dist: Literal["gamma", "genextreme", "lognorm"] | rv_continuous = "genextreme",
     method: Literal["ML", "APP", "PWM"] = "ML",
@@ -465,7 +465,7 @@ def standardized_groundwater_index(
     ----------
     gwl : xarray.DataArray
         Groundwater head level.
-    freq : Freq, optional
+    freq : {"D", "DS", "DE", "M", "MS", "ME", "W", "WS", "WE"}, optional
         Resampling frequency. A monthly or daily frequency is expected. Option `None` assumes
         that the desired resampling has already been applied input dataset and will skip the resampling step.
         Default: "MS".
@@ -566,7 +566,7 @@ def standardized_groundwater_index(
         freq=freq,
         window=window,
         dist=dist,
-        method=method,
+        method=method,  # type: ignore[arg-type]
         zero_inflated=zero_inflated,
         fitkwargs=fitkwargs,
         cal_start=cal_start,

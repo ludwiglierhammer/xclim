@@ -511,8 +511,7 @@ def saturation_vapor_pressure(
         Threshold temperature under which to switch to equations in reference to ice instead of water.
         If None (default) everything is computed with reference to water.
         If given, see `interp_power` for more options.
-    method : {"goffgratch46", "sonntag90", "tetens30", "wmo08", "its90",
-              "buck81", "aerk96", "ecmwf", "TE30", "GG46", "SO90"}
+    method : {"goffgratch46", "sonntag90", "tetens30", "wmo08", "its90", "buck81", "aerk96", "ecmwf", "TE30", "GG46", "SO90"}
         Which saturation vapour pressure formula to use, see notes.
         Default: "sonntag90".
     interp_power : int, optional
@@ -2783,8 +2782,7 @@ def water_budget(
         Surface Upwelling Longwave Radiation.
     sfcWind : xarray.DataArray, optional
         Surface wind velocity (at 10 m).
-    method : {"baierrobertson65", "BR65", "hargreaves85", "HG85", "thornthwaite48", "TW48",
-              "mcguinnessbordne05", "MB05", "allen98", "FAO_PM98", "droogersallen02", "DA02"}
+    method : {"baierrobertson65", "BR65", "hargreaves85", "HG85", "thornthwaite48", "TW48", "mcguinnessbordne05", "MB05", "allen98", "FAO_PM98", "droogersallen02", "DA02"}
         Method to use to calculate the potential evapotranspiration.
         Default: "BR65".
 

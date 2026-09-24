@@ -243,9 +243,9 @@ def huglin_index(
     k: int | xarray.DataArray = 1
     k_aggregated: xarray.DataArray | None = None
 
-    method_name = cast(Literal["huglin", "interpolated", "jones"], method.lower())
+    method = method.lower()  # type: ignore[assignment]
 
-    if method_name not in {"huglin", "interpolated", "jones"}:
+    if method not in {"huglin", "interpolated", "jones"}:
         raise NotImplementedError(
             "Method is not implemented. Only 'huglin', 'interpolated', and 'jones' are supported."
         )
@@ -255,13 +255,13 @@ def huglin_index(
     if end_date == "default":
         end_date = DayOfYearStr("10-01")
 
-    if method_name in ["huglin", "interpolated"]:
-        k = huglin_day_length_latitude_coefficient(lat, method=method_name, cap_value=cap_value)
-    elif method_name == "jones":
+    if method in ["huglin", "interpolated"]:
+        k = huglin_day_length_latitude_coefficient(lat, method=method, cap_value=cap_value)
+    elif method == "jones":
         k_aggregated = jones_day_length_latitude_coefficient(
             dates=tas.time,
             lat=lat,
-            method=method_name,
+            method=method,
             start_date=start_date,
             end_date=end_date,
             freq=freq,
@@ -1034,7 +1034,7 @@ def rain_season(
 )
 def standardized_precipitation_index(
     pr: xarray.DataArray,
-    freq: Freq | None = "MS",
+    freq: Literal["D", "DS", "DE", "M", "MS", "ME", "W", "WS", "WE"] | None = "MS",
     window: int = 1,
     dist: Literal["gamma", "fisk", "genextreme", "lognorm"] | rv_continuous = "gamma",
     method: Literal["APP", "ML", "PWM"] = "ML",
@@ -1053,7 +1053,7 @@ def standardized_precipitation_index(
     ----------
     pr : xarray.DataArray
         Daily precipitation.
-    freq : Freq, optional
+    freq : {"D", "DS", "DE", "M", "MS", "ME", "W", "WS", "WE"}, optional
         Resampling frequency. A monthly or daily frequency is expected. Option `None` assumes
         that the desired resampling has already been applied input dataset and will skip the resampling step.
         Default: "MS".
@@ -1180,7 +1180,7 @@ def standardized_precipitation_index(
         freq=freq,
         window=window,
         dist=dist,
-        method=method,
+        method=method,  # type: ignore[arg-type]
         zero_inflated=zero_inflated,
         fitkwargs=fitkwargs,
         cal_start=cal_start,
@@ -1200,7 +1200,7 @@ def standardized_precipitation_index(
 )
 def standardized_precipitation_evapotranspiration_index(
     wb: xarray.DataArray,
-    freq: Freq | None = "MS",
+    freq: Literal["D", "DS", "DE", "M", "MS", "ME", "W", "WS", "WE"] | None = "MS",
     window: int = 1,
     dist: Literal["gamma", "fisk", "genextreme", "lognorm"] | rv_continuous = "gamma",
     method: Literal["APP", "ML", "PWM"] = "ML",
@@ -1221,7 +1221,7 @@ def standardized_precipitation_evapotranspiration_index(
     ----------
     wb : xarray.DataArray
         Daily water budget (pr - pet).
-    freq : Freq, optional
+    freq : {"D", "DS", "DE", "M", "MS", "ME", "W", "WS", "WE"}, optional
         Resampling frequency. A monthly or daily frequency is expected. Option `None` assumes
         that the desired resampling has already been applied input dataset and will skip the resampling step.
         Default: "MS".
@@ -1286,7 +1286,7 @@ def standardized_precipitation_evapotranspiration_index(
         freq=freq,
         window=window,
         dist=dist,
-        method=method,
+        method=method,  # type: ignore[arg-type]
         zero_inflated=zero_inflated,
         fitkwargs=fitkwargs,
         cal_start=cal_start,
