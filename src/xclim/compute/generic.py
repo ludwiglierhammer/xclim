@@ -99,7 +99,7 @@ def statistics(
     ----------
     data : xr.DataArray
         Input data.
-    statistic : {"min", "max", "mean", "std", "var", 'count', 'sum', 'integral', 'doymax', 'doymin'} or Callable
+    statistic : {"min", "max", "mean", "std", "var", "count", "sum", "integral", "doymax", "doymin"} or Callable
         Reducing operation. It can either be a DataArray method or a function that can be applied to a DataArray.
     freq : Freq, optional
         Resampling frequency defining the periods as defined in :ref:`timeseries.resampling`.
@@ -365,11 +365,11 @@ def count_domain_occurrences(
     freq : Freq, optional
         Resampling frequency defining the periods defined in :ref:`timeseries.resampling`.
         If None, the time dimension is completely reduced.
-    low_condition : {'>', '>=', 'gt', 'ge'}
+    low_condition : {">", ">=", "gt", "ge"}
         The comparison operator to use on the lower bound.
         ">" means that equality does not fulfill the condition.
         Default: ">".
-    high_condition : {'<', '<=', 'lt', 'le'}
+    high_condition : {"<", "<=", "lt", "le"}
         The comparison operator to use on the higher bound.
         "<=" means that equality does fulfill the condition.
         Default: "<="
@@ -690,7 +690,7 @@ def spell_length_statistics(
         Input data.
     window : int
         Minimum length of a spell.
-    window_statistic : {'min', 'max', 'sum', 'mean', 'integral'}
+    window_statistic : {"min", "max", "sum", "mean", "integral"}
         Reduction along the window length to compute running statistic.
         Note that this does not matter when `window` is 1, in which case any occurrence
         of ``data {condition} thresh`` is considered a valid "spell".
@@ -698,7 +698,7 @@ def spell_length_statistics(
         Logical comparison operator. Computed as ``rolling_stat {condition} thresh``.
     thresh : Quantified
         Threshold to test against.
-    statistic : {'max', 'sum', 'count'} or sequence of those
+    statistic : {"max", "sum", "count"} or sequence of those
         Statistic on the spell lengths. If a list, multiple statistics are computed.
     freq : Freq, optional
         Resampling frequency. If None, time dimension is reduced completely.
@@ -802,7 +802,7 @@ def bivariate_spell_length_statistics(
         Input data.
     window : int
         Minimum length of a spell.
-    window_statistic : {'min', 'max', 'sum', 'mean', 'integral'}
+    window_statistic : {"min", "max", "sum", "mean", "integral"}
         Reduction along the window length to compute running statistic.
         Note that this does not matter when `window` is 1, in which case any occurrence
         of ``data {condition} thresh`` is considered a valid "spell".
@@ -1390,7 +1390,7 @@ def day_threshold_reached(
         If None, the time dimension is completely reduced.
     date : DayOfYearStr, optional
         Date of the year after which to look for the first event, or before which to look for the last event.
-        Should have the format '%m-%d'. None means there is no limit.
+        Should have the format "%m-%d". None means there is no limit.
         Setting `None` removes that constraint.
     which : {"first", "last"}
         Whether to look for the first or the last event. Default: "first".
@@ -1415,7 +1415,7 @@ def day_threshold_reached(
     elif which == "last":
         func = rl.last_run_before_date
     else:
-        raise ValueError(f"'which' must be 'first' or 'last'. Got {which}.")
+        raise ValueError(f"`which` must be 'first' or 'last'. Got {which}.")
 
     cond = select_time(cond, **indexer)
     out: xr.DataArray = resample_map(

@@ -215,7 +215,7 @@ def huglin_index(
 
     There are a few methods provided for calculating the day-length multiplication factor (:math:`k`) based on latitude:
 
-    - For the `"huglin"` and `"interpolated"` methods, values for k increase from `1.0` at 40°N or 40°S to `1.06` at 50°N or 50°S,
+    - For the "huglin"` and `"interpolated"` methods, values for k increase from `1.0` at 40°N or 40°S to `1.06` at 50°N or 50°S,
       where the `interpolated` method uses a smoothed curve and the `huglin` method uses a stepwise function.
       Values above 50°N or below 50°S are set via the `cap_value` variable, with `1.0` set as default.
       See: :py:func:`xclim.compute.helpers.huglin_day_length_latitude_coefficient` for more information.
@@ -244,7 +244,7 @@ def huglin_index(
         Returns
         -------
         bool
-            True if `value` is one of `"huglin"`, `"interpolated"`, or `"jones"`, otherwise ``False``.
+            True if `value` is in ["huglin", "interpolated", "jones"], otherwise ``False``.
         """
         return value in {"huglin", "interpolated", "jones"}
 
@@ -1079,7 +1079,7 @@ def standardized_precipitation_index(
         Averaging window length relative to the resampling frequency. For example, if `freq="MS"`,
         i.e. a monthly resampling, the window is an integer number of months.
         Default: 1.
-    dist : {'gamma', 'fisk', 'genextreme', 'lognorm'} or scipy.stats.rv_continuous
+    dist : {"gamma", "fisk", "genextreme", "lognorm"} or scipy.stats.rv_continuous
         Name of the univariate distribution, or a callable scipy.stats.rv_continuous (see :py:mod:`scipy.stats`).
         Default: "gamma".
     method : {"APP", "ML", "PWM"}
@@ -1089,7 +1089,7 @@ def standardized_precipitation_index(
         Default: "ML".
     fitkwargs : dict, optional
         Kwargs passed to ``xclim.compute.stats.fit`` used to impose values of certains parameters (`floc`, `fscale`).
-        If method is `PWM`, `fitkwargs` should be empty, except for `floc` with `dist`=`gamma` which is allowed.
+        If method is `PWM`, `fitkwargs` should be empty, except for `floc` with `dist="gamma"` which is allowed.
     cal_start : DateStr, optional
         Start date of the calibration period. A `DateStr` is expected, that is a `str` in format `"YYYY-MM-DD"`.
         Default option `None` means that the calibration period begins at the start of the input dataset.
@@ -1247,7 +1247,7 @@ def standardized_precipitation_evapotranspiration_index(
         Averaging window length relative to the resampling frequency. For example, if `freq="MS"`, i.e. a monthly
         resampling, the window is an integer number of months.
         Default: 1.
-    dist : {'gamma', 'fisk', 'genextreme', 'lognorm'} or scipy.stats.rv_continuous
+    dist : {"gamma", "fisk", "genextreme", "lognorm"} or scipy.stats.rv_continuous
         Name of the univariate distribution, or a callable scipy.stats.rv_continuous (see :py:mod:`scipy.stats`).
         Default: "gamma".
     method : {"APP", "ML", "PWM"}
@@ -1257,7 +1257,7 @@ def standardized_precipitation_evapotranspiration_index(
         Default: "ML".
     fitkwargs : dict, optional
         Kwargs passed to ``xclim.compute.stats.fit`` used to impose values of certains parameters (`floc`, `fscale`).
-        If method is `PWM`, `fitkwargs` should be empty, except for `floc` with `dist`=`gamma` which is allowed.
+        If method is `PWM`, `fitkwargs` should be empty, except for `floc` with `dist="gamma"` which is allowed.
     cal_start : DateStr, optional
         Start date of the calibration period. A `DateStr` is expected, that is a `str` in format `"YYYY-MM-DD"`.
         Default option `None` means that the calibration period begins at the start of the input dataset.
@@ -1394,7 +1394,7 @@ def effective_growing_degree_days(
         For "qian", the start date is based on a weighted 5-day rolling average, based on :py:func`qian_weighted_mean_average`.
         Default: "bootsma".
     after_date : DayOfYearStr, optional, defaults to "07-01"
-        Date of the year after which to look for the first frost event. Should have the format '%m-%d'.
+        Date of the year after which to look for the first frost event. Should have the format "%m-%d".
         Setting `None` removes that constraint.
     dim : str
         Time dimension. Default: "time".

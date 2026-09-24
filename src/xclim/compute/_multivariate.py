@@ -493,7 +493,7 @@ def multiday_temperature_swing(
        TX_{i} > 0℃ \land TN_{i} <  0℃
 
     This function returns a given statistic of the found lengths, optionally dropping those shorter than `window`.
-    For example, `window=1` and `statistic='sum'` returns the same value as :py:func:`daily_freezethaw_cycles`.
+    For example, `window=1` and `statistic="sum"` returns the same value as :py:func:`daily_freezethaw_cycles`.
     """
     thaw_threshold = convert_units_to(thresh_tasmax, tasmax)
     freeze_threshold = convert_units_to(thresh_tasmin, tasmin)
@@ -881,7 +881,7 @@ def liquid_precip_ratio(
 
     The ratio of total liquid precipitation over the total precipitation. If liquid precipitation is not provided,
     it can be estimated with the solid precipitation, or it is approximated with pr, tas and thresh,
-    using the :py:func:`rain_approximation` function with method 'binary'.
+    using the :py:func:`rain_approximation` function with method "binary".
 
     Parameters
     ----------

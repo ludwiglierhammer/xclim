@@ -370,7 +370,7 @@ def sfcwind_to_uas_vas(
 
     # TODO: This commented part should allow us to resample subdaily wind, but needs to be cleaned up and put elsewhere.
     # if resample is not None:
-    #     wind = wind.resample(time=resample).mean(dim='time', keep_attrs=True)
+    #     wind = wind.resample(time=resample).mean(dim="time", keep_attrs=True)
     #
     #     # nb_per_day is the number of values each day. This should be calculated
     #     wind_from_dir_math_per_day = wind_from_dir_math.reshape((len(wind.time), nb_per_day))
@@ -571,7 +571,7 @@ def saturation_vapor_pressure(
     Where :math:`T_{ice}` is ``ice_thresh``, :math:`T_{w}` is ``water_thresh`` and :math:`\beta` is ``interp_power``.
 
     As a note, a computation resembling what ECMWF's IFS does to compute relative humidity would use:
-    ``method = 'ecmwf'``, ``ice_thresh = 250.16 K``, ``water_thresh = 273.16 K`` (default) and ``interp_power = 2``
+    ``method = "ecmwf"``, ``ice_thresh = "250.16 K"``, ``water_thresh = "273.16 K"`` (default) and ``interp_power = 2``
     (:cite:t:`ecwmf_physical_2016`). Take note, however, that the 2m dew point temperature given by the IFS
     (ERA5, ERA5-Land) is computed with reference to water only.
 
@@ -740,7 +740,7 @@ def relative_humidity(
         Air Pressure. Must be given if `tdps` is not given.
     ice_thresh : Quantified, optional
         Threshold temperature under which to switch to equations in reference to ice instead of water.
-        If None (default) everything is computed with reference to water. Does nothing if 'method' is "bohren98".
+        If None (default) everything is computed with reference to water. Does nothing if `method` is "bohren98".
     method : {"bohren98", "goffgratch46", "sonntag90", "tetens30", "wmo08", "ecmwf"}
         Which method to use, see notes of this function and of :py:func:`saturation_vapor_pressure`.
         Default: "sonntag90".
@@ -1092,8 +1092,8 @@ def dewpoint_from_specific_humidity(
     :math:`T_d` is the dewpoint temperature. :math:`A`, :math:`B` and :math:`C` are method-specific and
     variant-specific coefficients.
 
-    To imitate the calculations of ECMWF's IFS (ERA5, ERA5-Land), use ``method='buck81'``
-    and ``reference='water'`` (the defaults).
+    To imitate the calculations of ECMWF's IFS (ERA5, ERA5-Land), use ``method="buck81"``
+    and ``reference="water"`` (the defaults).
     """
     # To avoid 0 in log below, we mask points with no water vapour at all
     huss = huss.where(huss > 0)
@@ -1129,7 +1129,7 @@ def snowfall_approximation(
         Mean, Maximum, or Minimum daily Temperature.
     thresh : Quantified
         Freezing point temperature. Non-scalar values are not allowed with method "brown".
-        Ignored for the ``'dai_*'`` methods.
+        Ignored if `method` is in ["dai_annual", "dai_seasonal"].
         Default: "0 degC".
     method : {"binary", "brown", "auer", "dai_annual", "dai_seasonal"}
         Which method to use when approximating snowfall from total precipitation. See notes.
@@ -1155,24 +1155,24 @@ def snowfall_approximation(
 
     Notes
     -----
-    The following methods are available to approximate snowfall. ``'brown'`` and ``'auer'`` are drawn from the
+    The following methods are available to approximate snowfall. "brown" and "auer" are drawn from the
     Canadian Land Surface Scheme :cite:p:`verseghy_class_2009,melton_atmosphericvarscalcf90_2019`.
-    The two ``'dai_*'`` methods are implemented from :cite:p:`dai_snowfall_2008`
+    Methods "dai_annual" and "dai_seasonal" are implemented from :cite:p:`dai_snowfall_2008`
     (``clip_temp`` is an addition from the xclim team).
 
-    - ``'binary'`` : When the temperature is under the freezing threshold, precipitation
+    - "binary" : When the temperature is under the freezing threshold, precipitation
       is assumed to be solid. The method is agnostic to the type of temperature used
       (mean, maximum or minimum).
-    - ``'brown'`` : The phase between the freezing threshold goes from solid to liquid linearly
+    - "brown" : The phase between the freezing threshold goes from solid to liquid linearly
       over a range of 2°C over the freezing point.
-    - ``'auer'`` : The phase between the freezing threshold goes from solid to liquid as a degree six
+    - "auer" : The phase between the freezing threshold goes from solid to liquid as a degree six
       polynomial over a range of 6°C over the freezing point.
-    - ``'dai_annual'`` : The snow fraction evolves according to an hyperbolic tangent function that has
+    - "dai_annual" : The snow fraction evolves according to an hyperbolic tangent function that has
       different parameters for precipitation over land or ocean. The snow and rain fractions do not add
       to 1, rather the remainder is denoted as a "sleet" fraction. If ``clip_temp`` is given, its value $$T_c$$ (in
       °C) is used to rescale (and then clip) the snowfall fraction function $$f(T)$$ as
       $$(f(T) - f(T_c))/(f(-T_c) - f(T_c))$$, so that it is 0 when $$T > T_c$$ and 1 when $$T < -T_c$$.
-    - ``'dai_seasonal'`` : Same as ``'dai_annual'``, but parameters are different for each season.
+    - "dai_seasonal" : Same as "dai_annual", but parameters are different for each season.
       The "annual" coefficients are taken over ocean in summer (JJA).
 
     References
@@ -1299,8 +1299,8 @@ def rain_approximation(
     tas : xarray.DataArray, optional
         Mean, Maximum, or Minimum daily Temperature.
     thresh : Quantified
-        Freezing point temperature. Non-scalar values are not allowed with method 'brown'.
-        Ignored for the ``'dai_*'`` methods.
+        Freezing point temperature. Non-scalar values are not allowed with method "brown".
+        Ignored if `method` is in ["dai_annual", "dai_seasonal"].
         Default: "0 degC".
     method : {"binary", "brown", "auer", "dai_annual", "dai_seasonal"}
         Which method to use when approximating snowfall from total precipitation. See notes.
@@ -1697,7 +1697,7 @@ def shortwave_downwelling_radiation_from_clearness_index(ci: xr.DataArray) -> xr
 def wind_chill_index(
     tas: xr.DataArray,
     sfcWind: xr.DataArray,
-    method: Literal["CAN", "USA"] = "CAN",
+    method: Literal["CAN", "US"] = "CAN",
     mask_invalid: bool = True,
 ) -> xr.DataArray:
     r"""
@@ -1749,7 +1749,7 @@ def wind_chill_index(
     Both equations are invalid for temperature over 0°C in the canadian method.
 
     The american Wind Chill Temperature index (WCT), as defined by USA's National Weather Service, is computed when
-    `method='US'`. In that case, the maximal valid temperature is 50°F (10 °C) and minimal wind speed is 3 mph
+    `method="US"`. In that case, the maximal valid temperature is 50°F (10 °C) and minimal wind speed is 3 mph
     (4.8 km/h).
 
     For more information, see:
@@ -2022,7 +2022,7 @@ def potential_evapotranspiration(  # pylint: disable=too-many-statements
           Requires tasmin and tasmax, daily [D] freq. (optional: tas can be given in addition of tasmin and tasmax).
 
         - "mcguinnessbordne05" or "MB05", based on :cite:t:`tanguy_historical_2018`.
-          Requires tas, daily [D] freq, with latitudes 'lat'.
+          Requires tas, daily [D] freq, with latitudes "lat".
 
         - "thornthwaite48" or "TW48", based on :cite:t:`thornthwaite_approach_1948`.
           Requires tasmin and tasmax, monthly [MS] or daily [D] freq.

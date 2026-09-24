@@ -627,7 +627,7 @@ def _fire_season(
     tas : np.ndarray
         Temperature [degC], the time axis on the last position.
     snd : np.ndarray, optional
-        Snow depth [m], time axis on the last position, used with method in ['LA08', 'GFWED'].
+        Snow depth [m], time axis on the last position, used with method in ["LA08", "GFWED"].
     method : {"WF93", "LA08", "GFWED"}
         Which method to use. Default: "WF93".
     temp_start_thresh : float
@@ -1186,7 +1186,7 @@ def fire_weather_ufunc(  # noqa: C901 # numpydoc ignore=PR01,PR02
 
     if tas.ndim == 1:
         dummy_dim = get_temp_dimname(tas.dims, "dummy")
-        # When arrays only have the 'time' dimension, non-temporal inputs of the wrapped ufunc
+        # When arrays only have the "time" dimension, non-temporal inputs of the wrapped ufunc
         # become scalars. We add a dummy dimension so that we don't have to deal with that.
         for i, arg in enumerate(args):
             if isinstance(arg, xr.DataArray):
@@ -1362,7 +1362,7 @@ def cffwis_indices(
     lat : xr.DataArray
         Latitude coordinate.
     snd : xr.DataArray, optional
-        Noon snow depth, only used if `season_method='LA08'` is passed.
+        Noon snow depth, only used if `season_method="LA08"` is passed.
     ffmc0 : xr.DataArray, optional
         Initial values of the fine fuel moisture code.
     dmc0 : xr.DataArray, optional
@@ -1499,7 +1499,7 @@ def drought_code(
         Ignored if `season_mask` is given.
     overwintering : bool
         Whether to activate DC overwintering or not. If True, either season_method or season_mask must be given.
-    dry_start : {"CFS", 'GFWED'}, optional
+    dry_start : {"CFS", "GFWED"}, optional
         Whether to activate the DC and DMC "dry start" mechanism and which method to use.
         See :py:func:`fire_weather_ufunc`.
     initial_start_up : bool
@@ -1596,7 +1596,7 @@ def duff_moisture_code(
         How to compute the start-up and shutdown of the fire season.
         If "None", no start-ups or shutdowns are computed, similar to the R fire function.
         Ignored if `season_mask` is given.
-    dry_start : {"CFS", 'GFWED'}, optional
+    dry_start : {"CFS", "GFWED"}, optional
         Whether to activate the DC and DMC "dry start" mechanism and which method to use.
         See :py:func:`fire_weather_ufunc`.
     initial_start_up : bool
@@ -1674,7 +1674,7 @@ def fire_season(
     tas : xr.DataArray
         Daily surface temperature, cffdrs recommends using maximum daily temperature.
     snd : xr.DataArray, optional
-        Snow depth, used with method == 'LA08'.
+        Snow depth, used with `method` is "LA08".
     method : {"WF93", "LA08", "GFWED"}
         Which method to use. "LA08"  and "GFWED" need the snow depth. Default "WF93".
     freq : Freq, optional

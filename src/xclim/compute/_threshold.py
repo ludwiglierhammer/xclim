@@ -1070,7 +1070,7 @@ def growing_season_start(
     thresh : Quantified
         Threshold temperature on which to base evaluation. Default: "5 degC".
     mid_date : DayOfYearStr, optional, defaults to "07-01"
-        Date of the year before which the season must start. Should have the format '%m-%d'.
+        Date of the year before which the season must start. Should have the format "%m-%d".
         Setting `None` removes that constraint.
         The default value is chosen for the Northern Hemisphere.
     window : int
@@ -1129,7 +1129,7 @@ def growing_season_end(
     thresh : Quantified
         Threshold temperature on which to base evaluation. Default: "5 degC".
     mid_date : DayOfYearStr, optional, defaults to "07-01"
-        Date of the year after which to look for the end of the season. Should have the format '%m-%d'.
+        Date of the year after which to look for the end of the season. Should have the format "%m-%d".
         Setting `None` removes that constraint.
         The default value is chosen for the Northern Hemisphere.
     window : int
@@ -1206,7 +1206,7 @@ def growing_season_length(
         Minimum number of days with temperature above the threshold to mark the beginning and end of growing season.
         Default: 6.
     mid_date : DayOfYearStr, optional, defaults to "07-01"
-        Date of the year before which the season must start and after which it can end. Should have the format '%m-%d'.
+        Date of the year before which the season must start and after which it can end. Should have the format "%m-%d".
         Setting `None` removes that constraint.
         The default value is chosen for the Northern Hemisphere.
     freq : Freq
@@ -1671,7 +1671,7 @@ def last_spring_frost(
     op : {"<", "lt", "<=", "le"}
         Comparison operation. Default: "<".
     before_date : DayOfYearStr, optional, defaults to "07-01"
-        Date of the year before which to look for the final frost event. Should have the format '%m-%d'.
+        Date of the year before which to look for the final frost event. Should have the format "%m-%d".
         Setting `None` removes that constraint.
         The default value is chosen for the Northern Hemisphere.
     window : int
@@ -1738,7 +1738,7 @@ def first_day_temperature_below(
     op : {"<", "lt", "<=", "le"}
         Comparison operation. Default: ">".
     after_date : DayOfYearStr, optional, defaults to "07-01"
-        Date of the year after which to look for the first event. Should have the format '%m-%d'.
+        Date of the year after which to look for the first event. Should have the format "%m-%d".
         Setting `None` removes that constraint.
         The default value is chosen for the Northern Hemisphere.
     window : int
@@ -1798,7 +1798,7 @@ def first_day_temperature_above(
     op : {">", "gt", ">=", "ge"}
         Comparison operation. Default: ">".
     after_date : DayOfYearStr, optional, default to "01-01"
-        Date of the year after which to look for the first event. Should have the format '%m-%d'.
+        Date of the year after which to look for the first event. Should have the format "%m-%d".
         Setting `None` removes that constraint.
         The default value is chosen for the Northern Hemisphere.
     window : int
@@ -3241,8 +3241,8 @@ def degree_days_exceedance_date(
     .. math::
 
        \begin{cases}
-       ST < \sum_{i=i_0}^{k} \max(TG_{ij} - T, 0) & \text{if $condition$ is '>' | '>='} \\
-       ST < \sum_{i=i_0}^{k} \max(T - TG_{ij}, 0) & \text{if $condition$ is '<' | '<='}
+       ST < \sum_{i=i_0}^{k} \max(TG_{ij} - T, 0) & \text{if $condition$ is ">" | ">="} \\
+       ST < \sum_{i=i_0}^{k} \max(T - TG_{ij}, 0) & \text{if $condition$ is "<" | "<="}
        \end{cases}
 
     The resulting :math:`k` is expressed as a day of year.
@@ -3259,7 +3259,7 @@ def degree_days_exceedance_date(
     elif condition in [">", "gt", ">=", "ge"]:
         c = _tas - _thresh
     else:
-        raise NotImplementedError(f"condition: '{condition}'.")
+        raise NotImplementedError(f"condition: {condition}.")
 
     def _exceedance_date(grp):
         strt_idx = rl.index_of_date(grp.time, after_date, max_idxs=1, default=0)
@@ -3418,7 +3418,7 @@ def dry_spell_total_length(
     Notes
     -----
     The algorithm assumes days before and after the timeseries are "wet", meaning that the condition for being
-    considered part of a dry spell is stricter on the edges. For example, with `window=3` and `op='sum'`, the first day
+    considered part of a dry spell is stricter on the edges. For example, with `window=3` and `op="sum"`, the first day
     of the series is considered part of a dry spell only if the accumulated precipitation within the first three days is
     under the threshold. In comparison, a day in the middle of the series is considered part of a dry spell if any of
     the three 3-day periods of which it is part are considered dry (so a total of five days are included in the
@@ -3492,7 +3492,7 @@ def dry_spell_max_length(
     Notes
     -----
     The algorithm assumes days before and after the timeseries are "wet", meaning that the condition for being
-    considered part of a dry spell is stricter on the edges. For example, with `window=3` and `op='sum'`,
+    considered part of a dry spell is stricter on the edges. For example, with `window=3` and `op="sum"`,
     the first day of the series is considered part of a dry spell only if the accumulated precipitation within
     the first three days is under the threshold. In comparison, a day in the middle of the series is considered
     part of a dry spell if any of the three 3-day periods of which it is part are considered dry
@@ -3644,7 +3644,7 @@ def wet_spell_total_length(
     Notes
     -----
     The algorithm assumes days before and after the timeseries are "dry", meaning that the condition for being
-    considered part of a wet spell is stricter on the edges. For example, with `window=3` and `op='sum'`, the first day
+    considered part of a wet spell is stricter on the edges. For example, with `window=3` and `op="sum"`, the first day
     of the series is considered part of a wet spell only if the accumulated precipitation within the first three days is
     over the threshold. In comparison, a day in the middle of the series is considered part of a wet spell if any of
     the three 3-day periods of which it is part are considered wet (so a total of five days are included in the
@@ -3720,7 +3720,7 @@ def wet_spell_max_length(
     Notes
     -----
     The algorithm assumes days before and after the timeseries are "dry", meaning that the condition for being
-    considered part of a wet spell is stricter on the edges. For example, with `window=3` and `op='sum'`, the first day
+    considered part of a wet spell is stricter on the edges. For example, with `window=3` and `op="sum"`, the first day
     of the series is considered part of a wet spell only if the accumulated precipitation within the first three days is
     over the threshold. In comparison, a day in the middle of the series is considered part of a wet spell if any of
     the three 3-day periods of which it is part are considered wet (so a total of five days are included in the

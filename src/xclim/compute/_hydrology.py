@@ -759,12 +759,12 @@ def runoff_ratio(
     - For snow-driven watersheds, spring runoff ratios are typically higher than
       annual runoff ratios, as snowmelt generates concentrated runoff events.
     - Temporal analysis: Yearly values computed from seasonal daily data and yearly data, depending on chosen frequency.
-      (e.g., 'YS' for yearly starting Jan, or 'QS-DEC' for seasons, '30YS' to compute the value over slices of 30 years
+      (e.g., "YS" for yearly starting Jan, or "QS-DEC" for seasons, '30YS' to compute the value over slices of 30 years
       from the start of the time series).
 
     References
     ----------
-    :cite:cts:'knoben_2024'
+    :cite:cts:`knoben_2024`
     """
     _rivo: xarray.DataArray = convert_units_to(rivo, "mm3/hr")
     _area: xarray.DataArray = convert_units_to(area, "mm2")
@@ -814,7 +814,7 @@ def aridity_index(pr: xarray.DataArray, evspsblpot: xarray.DataArray, freq: Freq
 
     References
     ----------
-    :cite:cts:'zomer_2022'
+    :cite:cts:`zomer_2022`
     """
     evspsblpot = convert_units_to(evspsblpot, pr)
     pr = pr.resample(time=freq).mean()
