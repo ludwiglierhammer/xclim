@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import warnings
-from typing import Literal, TypeGuard, cast
+from typing import Literal, cast
 
 import numpy as np
 import xarray
@@ -230,24 +230,6 @@ def huglin_index(
     ----------
     :cite:cts:`huglin_nouveau_1978,hall_spatial_2010`
     """
-    Method = Literal["huglin", "interpolated", "jones"]
-
-    def is_valid_method(value: str) -> TypeGuard[Method]:
-        """
-        Check whether ``value`` is a supported method name.
-
-        Parameters
-        ----------
-        value : str
-            Method name to validate.
-
-        Returns
-        -------
-        bool
-            True if `value` is in ["huglin", "interpolated", "jones"], otherwise ``False``.
-        """
-        return value in {"huglin", "interpolated", "jones"}
-
     if not isinstance(freq, str):
         raise TypeError("Freq must be a string.")
 
@@ -261,9 +243,9 @@ def huglin_index(
     k: int | xarray.DataArray = 1
     k_aggregated: xarray.DataArray | None = None
 
-    method_name = method.lower()
+    method_name = cast(Literal["huglin", "interpolated", "jones"], method.lower())
 
-    if not is_valid_method(method_name):
+    if method_name not in {"huglin", "interpolated", "jones"}:
         raise NotImplementedError(
             "Method is not implemented. Only 'huglin', 'interpolated', and 'jones' are supported."
         )

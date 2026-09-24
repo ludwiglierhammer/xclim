@@ -627,7 +627,7 @@ def _fire_season(
     tas : np.ndarray
         Temperature [degC], the time axis on the last position.
     snd : np.ndarray, optional
-        Snow depth [m], time axis on the last position, used with method in ["LA08", "GFWED"].
+        Snow depth [m], time axis on the last position, used with method is one of "LA08" or "GFWED".
     method : {"WF93", "LA08", "GFWED"}
         Which method to use. Default: "WF93".
     temp_start_thresh : float

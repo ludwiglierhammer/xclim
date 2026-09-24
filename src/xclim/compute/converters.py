@@ -1129,7 +1129,7 @@ def snowfall_approximation(
         Mean, Maximum, or Minimum daily Temperature.
     thresh : Quantified
         Freezing point temperature. Non-scalar values are not allowed with method "brown".
-        Ignored if `method` is in ["dai_annual", "dai_seasonal"].
+        Ignored if `method` is one of "dai_annual" or "dai_seasonal".
         Default: "0 degC".
     method : {"binary", "brown", "auer", "dai_annual", "dai_seasonal"}
         Which method to use when approximating snowfall from total precipitation. See notes.
@@ -1300,7 +1300,7 @@ def rain_approximation(
         Mean, Maximum, or Minimum daily Temperature.
     thresh : Quantified
         Freezing point temperature. Non-scalar values are not allowed with method "brown".
-        Ignored if `method` is in ["dai_annual", "dai_seasonal"].
+        Ignored if `method` is one of "dai_annual" or "dai_seasonal".
         Default: "0 degC".
     method : {"binary", "brown", "auer", "dai_annual", "dai_seasonal"}
         Which method to use when approximating snowfall from total precipitation. See notes.
