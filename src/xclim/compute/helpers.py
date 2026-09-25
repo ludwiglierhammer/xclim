@@ -958,8 +958,10 @@ def jones_day_length_latitude_coefficient(
         If a single value is given, it is converted to an xarray.DataArray.
     method : {"gladstones", "jones"}
         The method to use for the coefficient calculation.
-        The "jones" method .
-        The "gladstones" method uses an approximation of the Gladstones methodology for day length latitude coefficient.
+        The "jones" method uses a temperature range adjustment and integrates axial tilt, latitude, and day-of-year
+        based on :cite:t:`hall_spatial_2010`.
+        The "gladstones" method uses a temperature range adjustment and a latitude coefficient
+        based on :cite:t:`gladstones_wine_2011`.
     floor : bool, optional
         If True, latitudes where the day length latitude coefficient would be below "1.0", the value is set to "1.0".
         if False, coefficient can be below "1.0" for latitudes where the day length is less than the reference latitude.

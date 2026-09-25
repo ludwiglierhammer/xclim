@@ -183,7 +183,8 @@ def huglin_index(
         between 40° and 50° based on :cite:t:`huglin_nouveau_1978`.
         The "interpolated" method uses a smoothed curve latitude coefficient for values
         based on the intervals set in :cite:t:`huglin_nouveau_1978`.
-        The "jones" method integrates axial tilt, latitude, and day-of-year based on :cite:t:`hall_spatial_2010`.
+        The "jones" method uses a temperature range adjustment and integrates axial tilt, latitude, and day-of-year 
+        based on :cite:t:`hall_spatial_2010`.
         Default: "huglin".
     cap_value : float
         The value to use for the latitude coefficient when latitude is above 50°N or below 50°S.
@@ -331,7 +332,7 @@ def biologically_effective_degree_days(
         End date should be "10-01" for the Northern Hemisphere.
         The "interpolated" method uses a temperature range adjustment and a smoothed curve latitude
         coefficient for values between 40° and 50° based on :cite:t:`huglin_nouveau_1978`.
-        The "jones" method uses a temperature range adjustment and integrates axial tilt, latitude,
+        The "jones" method uses a temperature range adjustment and integrates axial tilt, latitude, 
         and day-of-year based on :cite:t:`hall_spatial_2010`.
         End_date should be "11-01" for the Northern Hemisphere.
         Default: "gladstones".
