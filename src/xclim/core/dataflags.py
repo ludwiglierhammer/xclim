@@ -412,9 +412,9 @@ def values_op_thresh_repeating_for_n_or_more_days(
     >>> comparison = "eq"
     >>> flagged = values_op_thresh_repeating_for_n_or_more_days(ds.pr, n=days, thresh=units, op=comparison)
     """
-    _thresh = convert_units_to(thresh, da, context=infer_context(standard_name=da.attrs.get("standard_name")))
+    thresh_float = convert_units_to(thresh, da, context=infer_context(standard_name=da.attrs.get("standard_name")))
 
-    repetitions = _sanitize_attrs(suspicious_run(da, window=n, op=op, thresh=_thresh))
+    repetitions = _sanitize_attrs(suspicious_run(da, window=n, op=op, thresh=thresh_float))
     description = f"Repetitive values at {thresh} for at least {n} days found for {da.name}."
     repetitions.attrs["description"] = description
     repetitions.attrs["units"] = ""
@@ -455,8 +455,9 @@ def wind_values_outside_of_bounds(
     >>> ceiling, floor = "46 m s-1", "0 m s-1"
     >>> flagged = wind_values_outside_of_bounds(sfcWind_dataset, upper=ceiling, lower=floor)
     """
-    _lower, _upper = convert_units_to(lower, da), convert_units_to(upper, da)
-    unbounded_percentages = _sanitize_attrs((da < _lower) | (da > _upper))
+    lower_float = convert_units_to(lower, da)
+    upper_float = convert_units_to(upper, da)
+    unbounded_percentages = _sanitize_attrs((da < lower_float) | (da > upper_float))
     description = f"Percentage values exceeding bounds of {lower} and {upper} found for {da.name}."
     unbounded_percentages.attrs["description"] = description
     unbounded_percentages.attrs["units"] = ""

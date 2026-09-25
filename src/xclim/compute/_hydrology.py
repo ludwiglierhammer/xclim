@@ -754,13 +754,13 @@ def runoff_ratio(
     ----------
     :cite:cts:'knoben_2024'
     """
-    _rivo: xarray.DataArray = convert_units_to(rivo, "mm3/hr")
-    _area: xarray.DataArray = convert_units_to(area, "mm2")
-    _pr: xarray.DataArray = convert_units_to(pr, "mm/hr")
+    rivo = convert_units_to(rivo, "mm3/hr")
+    area_float = convert_units_to(area, "mm2")
+    pr = convert_units_to(pr, "mm/hr")
 
-    runoff = _rivo / _area
+    runoff = rivo / area_float
     runoff_freq = runoff.resample(time=freq).mean()
-    pr_freq = _pr.resample(time=freq).mean()
+    pr_freq = pr.resample(time=freq).mean()
     out = runoff_freq / pr_freq
     out.attrs["units"] = ""
     return out
