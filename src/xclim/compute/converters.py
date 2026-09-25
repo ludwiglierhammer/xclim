@@ -511,7 +511,7 @@ def saturation_vapor_pressure(
         Threshold temperature under which to switch to equations in reference to ice instead of water.
         If None (default) everything is computed with reference to water.
         If given, see `interp_power` for more options.
-    method : {"goffgratch46", "sonntag90", "tetens30", "wmo08", "its90", "buck81", "aerk96", "ecmwf", "TE30", "GG46", "SO90"}
+    method : {"goffgratch46", "GG46", "sonntag90", "SO90", "tetens30", "TE30", "wmo08", "its90", "buck81", "aerk96", "ecmwf"}
         Which saturation vapour pressure formula to use, see notes.
         Default: "sonntag90".
     interp_power : int, optional
@@ -583,7 +583,7 @@ def saturation_vapor_pressure(
     --------
     >>> from xclim.compute import saturation_vapor_pressure
     >>> rh = saturation_vapor_pressure(tas=tas_dataset, ice_thresh="0 degC", method="wmo08")
-    """
+    """  # noqa: E501
     # Dropped explicit support of 4 letter codes, but don't want a breaking change
     method_dict: dict[str, str] = {"TE30": "tetens30", "GG46": "goffgratch46", "SO90": "sonntag90"}
 
@@ -2794,7 +2794,7 @@ def water_budget(
     See Also
     --------
     xclim.indicators.atmos.potential_evapotranspiration : Potential evapotranspiration calculation.
-    """
+    """  # noqa: E501
     pr = convert_units_to(pr, "kg m-2 s-1", context="hydro")
 
     if lat is None and evspsblpot is None:
