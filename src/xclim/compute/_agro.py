@@ -183,7 +183,7 @@ def huglin_index(
         between 40° and 50° based on :cite:t:`huglin_nouveau_1978`.
         The "interpolated" method uses a smoothed curve latitude coefficient for values
         based on the intervals set in :cite:t:`huglin_nouveau_1978`.
-        The "jones" method uses a temperature range adjustment and integrates axial tilt, latitude, and day-of-year 
+        The "jones" method uses a temperature range adjustment and integrates axial tilt, latitude, and day-of-year
         based on :cite:t:`hall_spatial_2010`.
         Default: "huglin".
     cap_value : float
@@ -332,7 +332,7 @@ def biologically_effective_degree_days(
         End date should be "10-01" for the Northern Hemisphere.
         The "interpolated" method uses a temperature range adjustment and a smoothed curve latitude
         coefficient for values between 40° and 50° based on :cite:t:`huglin_nouveau_1978`.
-        The "jones" method uses a temperature range adjustment and integrates axial tilt, latitude, 
+        The "jones" method uses a temperature range adjustment and integrates axial tilt, latitude,
         and day-of-year based on :cite:t:`hall_spatial_2010`.
         End_date should be "11-01" for the Northern Hemisphere.
         Default: "gladstones".
@@ -1035,7 +1035,7 @@ def rain_season(
 )
 def standardized_precipitation_index(
     pr: xarray.DataArray,
-    freq: Literal["D", "DS", "DE", "M", "MS", "ME", "W", "WS", "WE"] | None = "MS",
+    freq: Freq | None = "MS",
     window: int = 1,
     dist: Literal["gamma", "fisk", "genextreme", "lognorm"] | rv_continuous = "gamma",
     method: Literal["APP", "ML", "PWM"] = "ML",
@@ -1054,8 +1054,8 @@ def standardized_precipitation_index(
     ----------
     pr : xarray.DataArray
         Daily precipitation.
-    freq : {"D", "DS", "DE", "M", "MS", "ME", "W", "WS", "WE"}, optional
-        Resampling frequency. A monthly or daily frequency is expected. Option `None` assumes
+    freq : Freq, optional
+        Resampling frequency. A monthly, weekly, or daily frequency is expected. Option `None` assumes
         that the desired resampling has already been applied input dataset and will skip the resampling step.
         Default: "MS".
     window : int
@@ -1201,7 +1201,7 @@ def standardized_precipitation_index(
 )
 def standardized_precipitation_evapotranspiration_index(
     wb: xarray.DataArray,
-    freq: Literal["D", "DS", "DE", "M", "MS", "ME", "W", "WS", "WE"] | None = "MS",
+    freq: Freq | None = "MS",
     window: int = 1,
     dist: Literal["gamma", "fisk", "genextreme", "lognorm"] | rv_continuous = "gamma",
     method: Literal["APP", "ML", "PWM"] = "ML",
@@ -1222,8 +1222,8 @@ def standardized_precipitation_evapotranspiration_index(
     ----------
     wb : xarray.DataArray
         Daily water budget (pr - pet).
-    freq : {"D", "DS", "DE", "M", "MS", "ME", "W", "WS", "WE"}, optional
-        Resampling frequency. A monthly or daily frequency is expected. Option `None` assumes
+    freq : Freq, optional
+        Resampling frequency. A monthly, weekly, or daily frequency is expected. Option `None` assumes
         that the desired resampling has already been applied input dataset and will skip the resampling step.
         Default: "MS".
     window : int

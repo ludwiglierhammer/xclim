@@ -773,9 +773,7 @@ def dist_method(
     )
 
 
-def preprocess_standardized_index(
-    da: xr.DataArray, freq: Literal["D", "DS", "DE", "M", "MS", "ME", "W", "WS", "WE"] | None, window: int, **indexer
-):
+def preprocess_standardized_index(da: xr.DataArray, freq: Freq | None, window: int, **indexer):
     r"""
     Perform resample and roll operations involved in computing a standardized index.
 
@@ -783,7 +781,7 @@ def preprocess_standardized_index(
     ----------
     da : xarray.DataArray
         Input array.
-    freq : {"D", "DS", "DE", "M", "MS", "ME", "W", "WS", "WE"}, optional
+    freq : Freq, optional
         Resampling frequency. A monthly, weekly, or daily frequency is expected.
         Option `None` assumes that desired resampling has already been applied input dataset
         and will skip the resampling step.
@@ -805,19 +803,11 @@ def preprocess_standardized_index(
     # the constraint {"D", "MS"} in specific indices such as SPI / SPEI.
     final_freq = freq or xr.infer_freq(da.time)
     if final_freq:
-        if final_freq in ["D", "DE", "DS"]:
+        if final_freq == "D":
             group = "time.dayofyear"
-        elif compare_offsets(final_freq, "==", "M"):  # type: ignore[arg-type]
-            group = "time.month"
-        elif compare_offsets(final_freq, "==", "ME"):  # type: ignore[arg-type]
-            group = "time.month"
         elif compare_offsets(final_freq, "==", "MS"):  # type: ignore[arg-type]
             group = "time.month"
         elif compare_offsets(final_freq, "==", "W"):  # type: ignore[arg-type]
-            group = "time.week"
-        elif compare_offsets(final_freq, "==", "WE"):  # type: ignore[arg-type]
-            group = "time.week"
-        elif compare_offsets(final_freq, "==", "WS"):  # type: ignore[arg-type]
             group = "time.week"
         else:
             raise ValueError(
@@ -854,7 +844,7 @@ def preprocess_standardized_index(
 
 def standardized_index_fit_params(
     da: xr.DataArray,
-    freq: Literal["D", "DS", "DE", "M", "MS", "ME", "W", "WS", "WE"] | None,
+    freq: Freq | None,
     window: int,
     dist: Literal["gamma", "fisk", "genextreme", "lognorm"] | rv_continuous,
     method: Literal["ML", "APP", "PMW"],
@@ -874,7 +864,7 @@ def standardized_index_fit_params(
     ----------
     da : xarray.DataArray
         Input array.
-    freq : {"D", "DS", "DE", "M", "MS", "ME", "W", "WS", "WE"}, optional
+    freq : Freq, optional
         Resampling frequency. A monthly, weekly, or daily frequency is expected. Option `None` assumes
         that the desired resampling has already been applied input dataset and will skip the resampling step.
     window : int
@@ -972,7 +962,7 @@ def standardized_index_fit_params(
 
 def standardized_index(
     da: xr.DataArray,
-    freq: Literal["D", "DS", "DE", "M", "MS", "ME", "W", "WS", "WE"] | None,
+    freq: Freq | None,
     window: int | None,
     dist: str | rv_continuous | None,
     method: Literal["ML", "APP", "PMW"] | None,
@@ -997,7 +987,7 @@ def standardized_index(
     ----------
     da : xarray.DataArray
         Daily input data.
-    freq : {"D", "DS", "DE", "M", "MS", "ME", "W", "WS", "WE"}, optional
+    freq : Freq, optional
         Resampling frequency. A monthly, weekly, or daily frequency is expected. Option `None` assumes
         that the desired resampling has already been applied input dataset and will skip the resampling step.
     window : int, optional
