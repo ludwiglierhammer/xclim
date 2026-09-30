@@ -689,11 +689,11 @@ def heat_wave_frequency(
     ----------
     :cite:cts:`casati_regional_2013,robinson_definition_2001`
     """
-    thresh_tasmax_float = convert_units_to(thresh_tasmax, tasmax)
-    thresh_tasmin_float = convert_units_to(thresh_tasmin, tasmin)
+    thresh_tasmax = convert_units_to(thresh_tasmax, tasmax)
+    thresh_tasmin = convert_units_to(thresh_tasmin, tasmin)
 
     constrain: Sequence[Condition] = (">", ">=")
-    cond = (compare(tasmin, op, thresh_tasmin_float, constrain)) & (compare(tasmax, op, thresh_tasmax_float, constrain))
+    cond = (compare(tasmin, op, thresh_tasmin, constrain)) & (compare(tasmax, op, thresh_tasmax, constrain))
 
     out = rl.resample_and_rl(
         cond,
@@ -770,11 +770,11 @@ def heat_wave_max_length(
     ----------
     :cite:cts:`casati_regional_2013,robinson_definition_2001`
     """
-    thresh_tasmax_float = convert_units_to(thresh_tasmax, tasmax)
-    thresh_tasmin_float = convert_units_to(thresh_tasmin, tasmin)
+    thresh_tasmax = convert_units_to(thresh_tasmax, tasmax)
+    thresh_tasmin = convert_units_to(thresh_tasmin, tasmin)
 
     constrain: Sequence[Condition] = (">", ">=")
-    cond = (compare(tasmin, op, thresh_tasmin_float, constrain)) & (compare(tasmax, op, thresh_tasmax_float, constrain))
+    cond = (compare(tasmin, op, thresh_tasmin, constrain)) & (compare(tasmax, op, thresh_tasmax, constrain))
     out = rl.resample_and_rl(
         cond,
         resample_before_rl,
@@ -839,11 +839,11 @@ def heat_wave_total_length(
     -----
     See notes and references of `heat_wave_max_length`
     """
-    thresh_tasmax_float = convert_units_to(thresh_tasmax, tasmax)
-    thresh_tasmin_float = convert_units_to(thresh_tasmin, tasmin)
+    thresh_tasmax = convert_units_to(thresh_tasmax, tasmax)
+    thresh_tasmin = convert_units_to(thresh_tasmin, tasmin)
 
     constrain: Sequence[Condition] = (">", ">=")
-    cond = compare(tasmin, op, thresh_tasmin_float, constrain) & compare(tasmax, op, thresh_tasmax_float, constrain)
+    cond = compare(tasmin, op, thresh_tasmin, constrain) & compare(tasmax, op, thresh_tasmax, constrain)
     out = rl.resample_and_rl(
         cond,
         resample_before_rl,
@@ -1175,10 +1175,10 @@ def high_precip_low_temp(
     >>> tasmin = xr.open_dataset(path_to_tasmin_file).tasmin
     >>> hplt = high_precip_low_temp(pr, tas=tasmin, pr_thresh="10 mm/d", tas_thresh="-0.2 degC")
     """
-    pr_thresh_float = convert_units_to(pr_thresh, pr, context="hydro")
-    tas_thresh_float = convert_units_to(tas_thresh, tas)
+    pr_thresh = convert_units_to(pr_thresh, pr, context="hydro")
+    tas_thresh = convert_units_to(tas_thresh, tas)
 
-    cond = (pr >= pr_thresh_float) * (tas < tas_thresh_float) * 1
+    cond = (pr >= pr_thresh) * (tas < tas_thresh) * 1
     out = cond.resample(time=freq).sum(dim="time")
     return to_agg_units(out, pr, "count", deffreq="D")
 
@@ -1233,9 +1233,9 @@ def days_over_precip_thresh(
     >>> r75p = days_over_precip_thresh(pr, p75)
     """
     pr_per = convert_units_to(pr_per, pr, context="hydro")
-    thresh_float = convert_units_to(thresh, pr, context="hydro")
+    thresh = convert_units_to(thresh, pr, context="hydro")
 
-    tp = pr_per.where(pr_per > thresh_float, thresh_float)
+    tp = pr_per.where(pr_per > thresh, thresh)
     if "dayofyear" in pr_per.coords:
         # Create time series out of doy values.
         tp = resample_doy(tp, pr)
@@ -1287,16 +1287,16 @@ def fraction_over_precip_thresh(
         Fraction of precipitation over threshold during wet days.
     """
     pr_per = convert_units_to(pr_per, pr, context="hydro")
-    thresh_float = convert_units_to(thresh, pr, context="hydro")
+    thresh = convert_units_to(thresh, pr, context="hydro")
 
-    tp = pr_per.where(pr_per > thresh_float, thresh_float)
+    tp = pr_per.where(pr_per > thresh, thresh)
     if "dayofyear" in pr_per.coords:
         # Create time series out of doy values.
         tp = resample_doy(tp, pr)
 
     constrain: Sequence[Condition] = (">", ">=")
     # Total precip during wet days over period
-    total = pr.where(compare(pr, condition, thresh_float, constrain), 0).resample(time=freq).sum(dim="time")
+    total = pr.where(compare(pr, condition, thresh, constrain), 0).resample(time=freq).sum(dim="time")
 
     # Compute the days when precip is both over the wet day threshold and the percentile threshold.
     over = pr.where(compare(pr, condition, tp, constrain), 0).resample(time=freq).sum(dim="time")
@@ -1880,8 +1880,8 @@ def blowing_snow(
     xarray.DataArray
         Number of days when snowfall and wind speeds are above respective thresholds.
     """
-    snd_thresh_float = convert_units_to(snd_thresh, snd)
-    sfcWind_thresh_float = convert_units_to(sfcWind_thresh, sfcWind)
+    snd_thresh = convert_units_to(snd_thresh, snd)
+    sfcWind_thresh = convert_units_to(sfcWind_thresh, sfcWind)
 
     # Net snow accumulation over the last `window` days
     snow = snd.diff(dim="time").rolling(time=window, center=False).sum()
@@ -1889,7 +1889,7 @@ def blowing_snow(
     sfcWind = select_time(sfcWind, **indexer)
 
     # Blowing snow conditions
-    cond = (snow >= snd_thresh_float) * (sfcWind >= sfcWind_thresh_float) * 1
+    cond = (snow >= snd_thresh) * (sfcWind >= sfcWind_thresh) * 1
 
     out = cond.resample(time=freq).sum(dim="time")
     out = out.assign_attrs(units=to_agg_units(out, snd, "count", deffreq="D"))
