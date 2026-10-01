@@ -19,9 +19,7 @@ import cftime
 import numba as nb
 import numpy as np
 import xarray as xr
-from packaging.version import Version
 from xarray import CFTimeIndex
-from xarray import __version__ as __xr_version__
 
 from xclim.compute import run_length as rl
 from xclim.compute.reducers import XCLIM_OPS
@@ -31,10 +29,10 @@ from xclim.core.options import MAP_BLOCKS, OPTIONS
 from xclim.core.units import convert_units_to
 from xclim.core.utils import _chunk_like, uses_dask
 
-if Version(__xr_version__) >= Version("24.9.0"):
-    XR2409 = True
-else:
-    XR2409 = False
+try:
+    from xarray.coding.calendar_ops import _datetime_to_decimal_year  # type: ignore[attr-defined]
+except ImportError:
+    _datetime_to_decimal_year = None
 
 try:
     from flox.xarray import rechunk_for_blockwise
@@ -346,13 +344,9 @@ def day_angle(time: xr.DataArray) -> xr.DataArray:
     xr.DataArray, [rad]
         Day angle.
     """
-    if XR2409:
+    if _datetime_to_decimal_year is None:
         decimal_year = time.dt.decimal_year
     else:
-        from xarray.coding.calendar_ops import (  # pylint: disable=import-outside-toplevel
-            _datetime_to_decimal_year,  # ty: ignore[unresolved-import]
-        )
-
         decimal_year = _datetime_to_decimal_year(times=time, calendar=time.dt.calendar)
     return ((decimal_year % 1) * 2 * np.pi).assign_attrs(units="rad")
 
