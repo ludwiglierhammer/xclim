@@ -358,7 +358,9 @@ def convert_doy(
     return new_doy.assign_attrs(is_dayofyear=np.int32(1), calendar=target_cal)
 
 
-def ensure_cftime_array(time: Sequence) -> np.ndarray | Sequence[cftime.datetime]:
+def ensure_cftime_array(
+    time: xr.DataArray | np.ndarray | xr.CFTimeIndex | Sequence[cftime.datetime] | Sequence[pydt.datetime],
+) -> np.ndarray:
     """
     Convert an input 1D array to a numpy array of cftime objects.
 
@@ -385,7 +387,7 @@ def ensure_cftime_array(time: Sequence) -> np.ndarray | Sequence[cftime.datetime
     if isinstance(time, xr.CFTimeIndex):
         return time.values
     if isinstance(time[0], cftime.datetime):
-        return time
+        return np.asarray(time)
     if isinstance(time[0], pydt.datetime):
         return np.array([cftime.DatetimeGregorian(*ele.timetuple()[:6]) for ele in time])
     raise ValueError("Unable to cast array to cftime dtype")
@@ -458,7 +460,11 @@ def percentile_doy(
 
     if rrr.chunks is not None and len(rrr.chunks[rrr.get_axis_num("stack_dim")]) > 1:
         # Preserve chunk size
-        time_chunks_count = len(arr.chunks[arr.get_axis_num("time")])
+        chunks = arr.chunks
+        if chunks is None:
+            time_chunks_count = 1
+        else:
+            time_chunks_count = len(chunks[arr.get_axis_num("time")])
         doy_chunk_size = np.ceil(len(rrr.dayofyear) / (window * time_chunks_count))
         rrr = rrr.chunk({"stack_dim": -1, "dayofyear": doy_chunk_size})
 
@@ -1161,9 +1167,9 @@ def _get_doys(start: int, end: int, inclusive: tuple[bool, bool]):
         doys = np.concatenate((np.arange(start, 367), np.arange(0, end + 1)))
     # FIXME: Assignment issues
     if not inclusive[0]:
-        doys = doys[1:]  # type: ignore[assignment]
+        doys = doys[1:]
     if not inclusive[1]:
-        doys = doys[:-1]  # type: ignore[assignment]
+        doys = doys[:-1]
     return doys
 
 
@@ -1237,17 +1243,20 @@ def select_between_doys(
         _is_end_none = end is None
 
         # Convert None to DataArrays with nans
-        if start is None:
+        if start is None and isinstance(end, xr.DataArray):
             start = xr.full_like(end, np.nan, dtype="float64")
-        if end is None:
+        if end is None and isinstance(start, xr.DataArray):
             end = xr.full_like(start, np.nan, dtype="float64")
         # convert ints to DataArrays
-        if isinstance(start, int):
+        if isinstance(start, int) and isinstance(end, xr.DataArray):
             start = xr.full_like(end, start)
-        elif isinstance(end, int):
+        elif isinstance(end, int) and isinstance(start, xr.DataArray):
             end = xr.full_like(start, end)
         # Ensure they both have the same dims
         # align join='exact' will fail on common but different coords, broadcast will add missing coords
+
+        if not isinstance(start, xr.DataArray) or not isinstance(end, xr.DataArray):
+            raise TypeError("At least one of 'start' or 'end' has to be a xarray.DataArray.")
         start, end = xr.broadcast(*xr.align(start, end, join="exact"))
 
         if not include_bounds[0]:
@@ -1611,13 +1620,19 @@ def stack_periods(
     # longest = 0
     # Iterate over strides, but recompute the full window for each stride start
     for _, strd_slc in da.resample(time=strd_frq).groups.items():
+        if not isinstance(strd_slc, slice):
+            raise TypeError("Resamling of da does not return a slice.")
         win_resamp = time2.isel(time=slice(strd_slc.start, None)).resample(time=win_frq)
         # Get slice for first group
         win_slc = list(win_resamp.groups.values())[0]
+        if not isinstance(win_slc, slice):
+            raise TypeError("no slice")
         if min_length < window:
             # If we ask for a min_length period instead is it complete ?
             min_resamp = time2.isel(time=slice(strd_slc.start, None)).resample(time=minl_frq)
             min_slc = list(min_resamp.groups.values())[0]
+            if not isinstance(min_slc, slice):
+                raise TypeError("no slice")
             open_ended = min_slc.stop is None
         else:
             # The end of the group slice is None if no outside-group value was found after the last element
@@ -1677,10 +1692,13 @@ def stack_periods(
         join="outer",
         **kwargs,
     )
-    out = out.assign_coords(
-        time=(("time",), fake_time, da.time.attrs.copy()),
-        **{f"{dim}_length": lengths, dim: starts},
-    )
+    coords = {
+        "time": (("time",), fake_time, da.time.attrs.copy()),
+        f"{dim}_length": lengths,
+        dim: starts,
+    }
+
+    out = out.assign_coords(coords)
     out.time.attrs.update(long_name="Placeholder time axis")
     return out
 
@@ -1784,7 +1802,7 @@ def unstack_periods(da: DataType, dim: str = "period") -> DataType:
         for i, (start, length) in enumerate(zip(starts.values, lengths.values, strict=False)):
             real_time = _reconstruct_time(time_as_delta, start)
             periods.append(
-                da.isel(**{dim: i}, drop=True)
+                da.isel({dim: i}, drop=True)
                 .isel(time=slice(0, length))
                 .assign_coords(time=real_time.isel(time=slice(0, length)))
             )
@@ -1814,7 +1832,7 @@ def unstack_periods(da: DataType, dim: str = "period") -> DataType:
             slc = slice(slices[mid].start, min(slices[Nwin - 1].stop or length, length))
         else:
             slc = slice(slices[mid].start, min(slices[mid].stop, length))
-        periods.append(da.isel(**{dim: i}, drop=True).isel(time=slc).assign_coords(time=real_time.isel(time=slc)))
+        periods.append(da.isel({dim: i}, drop=True).isel(time=slc).assign_coords(time=real_time.isel(time=slc)))
 
     return xr.concat(periods, "time")
 
