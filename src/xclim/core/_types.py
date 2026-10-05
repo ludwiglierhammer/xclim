@@ -271,7 +271,7 @@ def infer_kind_from_parameter(param) -> InputKind:
 
     if param.name == "freq":
         return InputKind.FREQ_STR
-        
+
     if param.name == "subfreq":
         return InputKind.FREQ_STR
 
