@@ -226,12 +226,10 @@ def _get_bootstrap_freq(freq: Freq) -> str:
     return bfreq
 
 
-def _get_year_label(year_dt: cftime.datetime | str) -> int:
+def _get_year_label(year_dt: cftime.datetime | np.datetime64 | str) -> int:
     if isinstance(year_dt, cftime.datetime):
         return year_dt.year
-    elif isinstance(year_dt, str):
-        return np.datetime64(year_dt, "Y").astype(int) + 1970
-    raise ValueError(f"Unsupported type for 'year_dt': {type(year_dt)}")
+    return np.datetime64(year_dt, "Y").astype(int) + 1970
 
 
 # TODO: Return a generator instead and assess performance
