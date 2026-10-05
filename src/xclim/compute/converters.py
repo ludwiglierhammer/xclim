@@ -968,7 +968,7 @@ def specific_humidity_from_dewpoint(
     tdps: xr.DataArray,
     ps: xr.DataArray,
     ice_thresh: Quantified | None = None,
-    method: str = "sonntag90",
+    method: Literal["goffgratch46", "sonntag90", "tetens30", "wmo08", "buck81", "aerk96", "ecmwf"] = "sonntag90",
     interp_power: float | None = None,
     water_thresh: Quantified = "0 degC",
 ) -> xr.DataArray:

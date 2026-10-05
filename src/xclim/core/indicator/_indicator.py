@@ -1424,7 +1424,7 @@ class _InputChecker(_DeprecationWarner):
         for name, val in params.items():
             param = self._all_parameters[name]
             if "choices" in param:
-                if val not in param.choices:
+                if val and val not in param.choices:
                     raise ValidationError(
                         f"Parameter {name} received value {val}, which is not among valid values {param.choices}."
                     )
