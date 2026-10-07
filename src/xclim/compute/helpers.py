@@ -213,7 +213,9 @@ def spell_mask(
         weights = xr.DataArray(weights, dims=("window",))
 
     if isinstance(thresh, Sequence):
-        raise TypeError(f"'thresh' can only be a sequence if 'data' is one. Got {thresh} but 'data' is of type  {type(data)}")
+        raise TypeError(
+            f"'thresh' can only be a sequence if 'data' is one. Got {thresh} but 'data' is of type  {type(data)}"
+        )
 
     if window == 1:  # Fast path
         is_in_spell = compare(data, condition, thresh, constrain=constrain)
@@ -1310,7 +1312,7 @@ def _add_one_day(time: xr.DataArray) -> xr.DataArray:
         Next day.
     """
     if time.dtype == "O":
-        return xr.apply_ufunc(lambda t: t + timedelta(days=1), time)
+        return time + timedelta(days=1)  # type: ignore[operator]
     return time + np.timedelta64(1, "D")
 
 
