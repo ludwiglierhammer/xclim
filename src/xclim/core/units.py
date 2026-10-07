@@ -404,7 +404,8 @@ def convert_units_to(
         If a DataTree, this function will be applied over nodes with :py:func:`xarray.DataTree.map_over_datasets`.
     target : str or xr.DataArray or units.Quantity or units.Unit or dict
         Target array of values to which units must conform.
-        If `source` is a Dataset, it must be mapping from variable name to target units.
+       An object representing units to convert the source too, anything :py:func:`units2pint` understands.
+       If `source` is a Dataset or a DataTree, it must be mapping from variable name to target units.
     context : {"infer", "hydro", "none"}, optional
         The unit definition context. Default: None.
         If "infer", it will be inferred with :py:func:`xclim.core.units.infer_context` using
