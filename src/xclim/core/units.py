@@ -347,7 +347,7 @@ def str2pint(val: str) -> pint.Quantity:
 @overload
 def convert_units_to(  # numpydoc ignore=GL08
     source: DataTree,
-    target: Quantified | pint.Unit | dict,
+    target: dict[str, Quantified | pint.Unit],
     context: Literal["infer", "hydro", "none"] | None = None,
 ) -> DataTree: ...
 
@@ -355,7 +355,7 @@ def convert_units_to(  # numpydoc ignore=GL08
 @overload
 def convert_units_to(  # numpydoc ignore=GL08
     source: xr.Dataset,
-    target: Quantified | pint.Unit | dict,
+    target: dict[str, Quantified | pint.Unit],
     context: Literal["infer", "hydro", "none"] | None = None,
 ) -> xr.Dataset: ...
 
@@ -363,7 +363,7 @@ def convert_units_to(  # numpydoc ignore=GL08
 @overload
 def convert_units_to(  # numpydoc ignore=GL08
     source: xr.DataArray,
-    target: Quantified | pint.Unit | dict,
+    target: Quantified | pint.Unit,
     context: Literal["infer", "hydro", "none"] | None = None,
 ) -> xr.DataArray: ...
 
@@ -371,7 +371,7 @@ def convert_units_to(  # numpydoc ignore=GL08
 @overload
 def convert_units_to(  # numpydoc ignore=GL08
     source: str,
-    target: Quantified | pint.Unit | dict,
+    target: Quantified | pint.Unit,
     context: Literal["infer", "hydro", "none"] | None = None,
 ) -> float: ...
 
@@ -379,7 +379,7 @@ def convert_units_to(  # numpydoc ignore=GL08
 @overload
 def convert_units_to(  # numpydoc ignore=GL08
     source: pint.Quantity,
-    target: Quantified | pint.Unit | dict,
+    target: Quantified | pint.Unit,
     context: Literal["infer", "hydro", "none"] | None = None,
 ) -> float: ...
 
@@ -387,7 +387,7 @@ def convert_units_to(  # numpydoc ignore=GL08
 # FIXME: The typing here is difficult to determine, as Generics cannot be used to track the type of the output.
 def convert_units_to(
     source: Quantified | xr.Dataset | DataTree,  # ty: ignore[invalid-type-form]
-    target: Quantified | pint.Unit | dict,
+    target: Quantified | pint.Unit | dict[str, Quantified | pint.Unit],
     context: Literal["infer", "hydro", "none"] | None = None,
 ) -> xr.DataArray | float | xr.Dataset | DataTree:
     """
@@ -429,8 +429,8 @@ def convert_units_to(
     """
     if isinstance(source, DataTree):
         return source.map_over_datasets(convert_units_to, target, kwargs={"context": context})
-    if isinstance(source, xr.Dataset) and hasattr(target, "items"):
-        return source.assign({var: convert_units_to(source[var], tgt, context=context) for var, tgt in target.items()})
+    if isinstance(source, xr.Dataset):
+        return source.assign({var: convert_units_to(source[var], tgt, context=context) for var, tgt in target.items()})  # type: ignore[union-attr]
 
     context = context or "none"
 
