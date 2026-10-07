@@ -607,7 +607,7 @@ def saturation_vapor_pressure(
         alpha = ((tas - T_i) / (T_w - T_i)) ** interp_power
         e_sat = xr.where(tas < T_i, e_sat_i, xr.where(tas > T_w, e_sat_w, alpha * e_sat_w + (1 - alpha) * e_sat_i))
     else:
-        raise ValueError("If 'ice_tresh' is None, 'interp_power' has to be None too.")
+        raise ValueError("If 'ice_thresh' is None, 'interp_power' must also be None.")
 
     e_sat = e_sat.assign_attrs(units="Pa")
     return e_sat
