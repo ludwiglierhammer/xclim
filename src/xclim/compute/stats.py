@@ -327,7 +327,7 @@ def parametric_cdf(
     distribution = get_dist(dist or p.attrs["scipy_dist"])
 
     data = xr.apply_ufunc(
-        lambda v, p: distribution.cdf(v, *p),
+        lambda values, params: distribution.cdf(values, *params),
         da_v,
         p,
         input_core_dims=[["v"], ["dparams"]],
@@ -360,7 +360,7 @@ def parametric_cdf(
 
 def parametric_pdf(
     p: xr.DataArray,
-    v: xr.DataArray | float | Sequence[float],
+    v: xr.DataArray | np.ndarray | float | Sequence[float],
     dist: str | rv_continuous | None = None,
 ) -> xr.DataArray:
     """
@@ -372,7 +372,7 @@ def parametric_pdf(
         Distribution parameters returned by the `fit` function.
         The array should have dimension `dparams` storing the distribution parameters,
         and attribute `scipy_dist`, storing the name of the distribution.
-    v : xr.DataArray or float or Sequence of float
+    v : xr.DataArray or np.ndarray or float or Sequence of float
         Value to compute the PDF.
     dist : str or rv_continuous distribution object, optional
         The distribution name or instance is the `scipy_dist` attribute is not available on `p`.
@@ -383,9 +383,8 @@ def parametric_pdf(
         An array of probabilities estimated from the distribution parameters.
     """
     if not isinstance(v, xr.DataArray):
-        v_arr = np.atleast_1d(v)
-        da_v = xr.DataArray(v_arr, dims=["v"]).assign_coords(v=v_arr)
-        v = xr.DataArray(v_arr)
+        v = np.atleast_1d(v)
+        da_v = xr.DataArray(v, dims=["v"]).assign_coords(v=v)
     else:
         if len(v.dims) > 1:
             raise ValueError("`v` must be one-dimensional.")
@@ -394,7 +393,7 @@ def parametric_pdf(
     distribution = get_dist(dist or p.attrs["scipy_dist"])
 
     data = xr.apply_ufunc(
-        lambda v, p: distribution.pdf(v, *p),
+        lambda values, params: distribution.pdf(values, *params),
         da_v,
         p,
         input_core_dims=[["v"], ["dparams"]],
