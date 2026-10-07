@@ -470,11 +470,11 @@ def robustness_categories(
         elif not chg_op:  # type: ignore[ty:redundant-condition]
             cond = compare(agree, agr_op, agr_thresh)
         elif changed is None:
-            raise ValueError("'changed' must be provided")
+            raise ValueError("'changed' must be provided.")
         elif agr_thresh is None:
-            raise ValueError("'agr_thresh' must be provided")
+            raise ValueError("'agr_thresh' must be provided.")
         elif agree is None:
-            raise ValueError("'agree' must be provided")
+            raise ValueError("'agree' must be provided.")
         else:
             cond = compare(changed, chg_op, chg_thresh) & compare(agree, agr_op, agr_thresh)
         robustness = xr.where(~cond, robustness, i, keep_attrs=True)
