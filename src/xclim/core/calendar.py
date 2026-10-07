@@ -1612,29 +1612,23 @@ def stack_periods(
     # longest = 0
     # Iterate over strides, but recompute the full window for each stride start
     for _, strd_slc in da.resample(time=strd_frq).groups.items():
-        if not isinstance(strd_slc, slice):
-            raise TypeError("Resamling of da does not return a slice.")
-        win_resamp = time2.isel(time=slice(strd_slc.start, None)).resample(time=win_frq)
+        win_resamp = time2.isel(time=slice(strd_slc.start, None)).resample(time=win_frq)  # type: ignore[union-attr]
         # Get slice for first group
         win_slc = list(win_resamp.groups.values())[0]
-        if not isinstance(win_slc, slice):
-            raise TypeError("no slice")
         if min_length < window:
             # If we ask for a min_length period instead is it complete ?
-            min_resamp = time2.isel(time=slice(strd_slc.start, None)).resample(time=minl_frq)
+            min_resamp = time2.isel(time=slice(strd_slc.start, None)).resample(time=minl_frq)  # type: ignore[union-attr]
             min_slc = list(min_resamp.groups.values())[0]
-            if not isinstance(min_slc, slice):
-                raise TypeError("no slice")
-            open_ended = min_slc.stop is None
+            open_ended = min_slc.stop is None  # type: ignore[union-attr]
         else:
             # The end of the group slice is None if no outside-group value was found after the last element
             # As we added an extra step to time2, we avoid the case where a group ends exactly on the last element of ds
-            open_ended = win_slc.stop is None
+            open_ended = win_slc.stop is None  # type: ignore[union-attr]
         if open_ended:
             # Too short, we got to the end
             break
         if (
-            strd_slc.start == 0
+            strd_slc.start == 0  # type: ignore[union-attr]
             and parse_offset(freq)[1] in "YAQ"
             and min_length == window
             and not _month_is_first_period_month(da.time[0].item(), freq)
@@ -1645,8 +1639,8 @@ def stack_periods(
             continue
         periods.append(
             slice(
-                strd_slc.start + win_slc.start,
-                ((strd_slc.start + win_slc.stop) if win_slc.stop is not None else da.time.size),
+                strd_slc.start + win_slc.start,  # type: ignore[union-attr]
+                ((strd_slc.start + win_slc.stop) if win_slc.stop is not None else da.time.size),  # type: ignore[union-attr]
             )
         )
 
