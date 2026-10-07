@@ -455,8 +455,7 @@ def wind_values_outside_of_bounds(
     >>> ceiling, floor = "46 m s-1", "0 m s-1"
     >>> flagged = wind_values_outside_of_bounds(sfcWind_dataset, upper=ceiling, lower=floor)
     """
-    lower = convert_units_to(lower, da)
-    upper = convert_units_to(upper, da)
+    lower, upper = convert_units_to(lower, da), convert_units_to(upper, da)
     unbounded_percentages = _sanitize_attrs((da < lower) | (da > upper))
     description = f"Percentage values exceeding bounds of {lower} and {upper} found for {da.name}."
     unbounded_percentages.attrs["description"] = description
