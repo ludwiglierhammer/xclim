@@ -458,13 +458,8 @@ def percentile_doy(
     rr = rr.drop_vars("time").assign_coords(crd)
     rrr = rr.unstack("time").stack(stack_dim=("year", "window"))
 
-    if rrr.chunks is not None and len(rrr.chunks[rrr.get_axis_num("stack_dim")]) > 1:
-        # Preserve chunk size
-        chunks = arr.chunks
-        if chunks is None:
-            time_chunks_count = 1
-        else:
-            time_chunks_count = len(chunks[arr.get_axis_num("time")])
+    if rrr.chunks is not None and len(rrr.chunks[rrr.get_axis_num("stack_dim")]) > 1 and arr.chunks is not None:
+        time_chunks_count = len(arr.chunks[arr.get_axis_num("time")])
         doy_chunk_size = np.ceil(len(rrr.dayofyear) / (window * time_chunks_count))
         rrr = rrr.chunk({"stack_dim": -1, "dayofyear": doy_chunk_size})
 
