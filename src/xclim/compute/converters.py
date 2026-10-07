@@ -1947,7 +1947,6 @@ def _pet_hargreaves(  # numpydoc ignore=GL08
 
     # Hargreaves and Samani (1985) formula
     pet = 0.0023 * ra * (tas + 17.8) * (tasmax - tasmin) ** 0.5
-    print(pet)
     return pet.clip(0)
 
 
