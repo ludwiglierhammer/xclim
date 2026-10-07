@@ -213,7 +213,7 @@ def spell_mask(
         weights = xr.DataArray(weights, dims=("window",))
 
     if isinstance(thresh, Sequence):
-        raise TypeError("'thresh' is a sequence.")
+        raise TypeError(f"'thresh' can only be a sequence if 'data' is one. Got {thresh} but 'data' is of type  {type(data)}")
 
     if window == 1:  # Fast path
         is_in_spell = compare(data, condition, thresh, constrain=constrain)
