@@ -201,7 +201,7 @@ def spell_mask(
             thresh_list = []
             for t in thresh:
                 if not isinstance(t, xr.DataArray):
-                    raise ValueError("All elements of thresh has to be xarray.DataArrays")
+                    raise ValueError("All elements of 'thresh' must be of type 'xarray.DataArray'.")
                 thresh_list.append(t)
             thresh = xr.concat(thresh_list, "variable")
         else:
