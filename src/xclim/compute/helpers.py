@@ -198,12 +198,7 @@ def spell_mask(
             raise ValueError("When ``data`` is given as a list, ``thresh`` must be a sequence of the same length.")
         data = xr.concat(data, "variable")
         if isinstance(thresh[0], xr.DataArray):
-            thresh_list = []
-            for t in thresh:
-                if not isinstance(t, xr.DataArray):
-                    raise ValueError("All elements of 'thresh' must be of type 'xarray.DataArray'.")
-                thresh_list.append(t)
-            thresh = xr.concat(thresh_list, "variable")
+            thresh = xr.concat(thresh, "variable")  # type: ignore[assignment, arg-type]
         else:
             thresh = xr.DataArray(thresh, dims=("variable",))
         _singlevar = False
