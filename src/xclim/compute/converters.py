@@ -2234,7 +2234,7 @@ def potential_evapotranspiration(  # pylint: disable=too-many-statements
     if lat is None:
         tas_for_lat = tas if tas is not None else tasmin
         if tas_for_lat is None:
-            raise ValueError("One of 'tasmin' and 'tas' has to be provided.")
+            raise ValueError("One of 'tasmin' or 'tas' must be provided.")
         lat = _gather_lat(tas_for_lat)
 
     if method in ["baierrobertson65", "BR65"]:
