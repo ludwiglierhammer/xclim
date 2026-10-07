@@ -435,7 +435,7 @@ def _ens_align_datasets(
             elif isinstance(n, xr.DataArray):
                 ds = n.to_dataset()
             elif isinstance(n, list):
-                raise TypeError("'multifile' is False requires a single file path, not a list")
+                raise TypeError("'multifile' is set to False but 'n' is of type list. Provide a single file path.")
             else:
                 ds = xr.open_dataset(n, **xr_kwargs)
 
