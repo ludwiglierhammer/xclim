@@ -1233,26 +1233,23 @@ def select_between_doys(
             raise ValueError("Passing array-like `doy_bounds` is incompatible with `drop=True`.")
 
         start, end = doy_bounds
+
         # store whether the bounds are None for later evaluation
         _is_start_none = start is None
         _is_end_none = end is None
 
         # Convert None to DataArrays with nans
-        if start is None and isinstance(end, xr.DataArray):
-            start = xr.full_like(end, np.nan, dtype="float64")
-        if end is None and isinstance(start, xr.DataArray):
-            end = xr.full_like(start, np.nan, dtype="float64")
+        if start is None:
+            start = xr.full_like(end, np.nan, dtype="float64")  # type: ignore[arg-type]
+        if end is None:
+            end = xr.full_like(start, np.nan, dtype="float64")  # type: ignore[arg-type]
         # convert ints to DataArrays
-        if isinstance(start, int) and isinstance(end, xr.DataArray):
-            start = xr.full_like(end, start)
-        elif isinstance(end, int) and isinstance(start, xr.DataArray):
-            end = xr.full_like(start, end)
-        # Ensure they both have the same dims
-        # align join='exact' will fail on common but different coords, broadcast will add missing coords
+        if isinstance(start, int):
+            start = xr.full_like(end, start)  # type: ignore[arg-type]
+        elif isinstance(end, int):
+            end = xr.full_like(start, end)  # type: ignore[arg-type]
 
-        if not isinstance(start, xr.DataArray) or not isinstance(end, xr.DataArray):
-            raise TypeError("At least one of 'start' or 'end' has to be a xarray.DataArray.")
-        start, end = xr.broadcast(*xr.align(start, end, join="exact"))
+        start, end = xr.broadcast(*xr.align(start, end, join="exact"))  # type: ignore[call-overload]
 
         if not include_bounds[0]:
             start += 1
