@@ -698,13 +698,13 @@ def daily_pr_intensity(
     >>> pr = xr.open_dataset(path_to_pr_file).pr
     >>> daily_int = daily_pr_intensity(pr, thresh="5 mm/day", freq="QS-DEC")
     """
-    thresh = convert_units_to(thresh, pr, context="hydro")
+    t = convert_units_to(thresh, pr, context="hydro")
 
     # Get amount of rain (not rate)
     pram = rate2amount(pr)
 
     # Comparison
-    comparison = compare(pr, op, thresh, constrain=(">", ">="))
+    comparison = compare(pr, op, t, constrain=(">", ">="))
 
     # put pram = 0 for non wet-days
     pram_wd = xarray.where(comparison, pram, 0)
