@@ -759,9 +759,10 @@ class IndicatorBase(IndexWrapper):
 
         Returns
         -------
-        tuple of dict and dict
-            - The merged dict of Parameter objects.
-            - For renamed variables, this maps the name in the compute function to the new units.
+        dict
+            The merged dict of Parameter objects.
+        dict
+            For renamed variables, this maps the name in the compute function to the new units.
         """
         new_units = {}
         for old_name, new_name in var_mapping.items():
@@ -979,10 +980,12 @@ class IndicatorBase(IndexWrapper):
 
         Returns
         -------
-        tuple of three dicts
-            - Same as `das`, potentially modified.
-            - Same as `params`, potentially modified.
-            - Same as `meta`, potentially modified.
+        dict
+            Same as `das`, potentially modified.
+        dict
+            Same as `params`, potentially modified.
+        dict
+            Same as `meta`, potentially modified.
         """
         return das, params, meta
 

@@ -293,10 +293,11 @@ def uas_vas_to_sfcwind(
 
     Returns
     -------
-    tuple of xarray.DataArray and xarray.DataArray
-        Wind Velocity [m s-1].
+    wind: xr.DataArray, [m s-1]
+        Wind Velocity.
+    wind_from_dir: xr.DataArray, [°]
         Direction from which the wind blows, following the meteorological convention where 360 stands
-        for North and 0 for calm winds [°].
+        for North and 0 for calm winds.
 
     Notes
     -----
@@ -353,9 +354,10 @@ def sfcwind_to_uas_vas(
 
     Returns
     -------
-    tuple of xarray.DataArray and xarray.DataArray
-        Eastward Wind Velocity [m s-1].
-        Northward Wind Velocity [m s-1].
+    uas: xr.DataArray, [m s-1]
+        Eastward Wind Velocity.
+    vas: xr.DataArray, [m s-1]
+        Northward Wind Velocity.
 
     Examples
     --------

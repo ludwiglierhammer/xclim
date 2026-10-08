@@ -581,15 +581,18 @@ def parse_offset(freq: Freq) -> tuple[int, str, bool, str | None]:
 
     Returns
     -------
-    tuple of int, str, bool and str or None
-        - Multiplier of the base frequency. "[n]W" is always replaced with "[7n]D",
-          as xarray doesn't support "W" for cftime indexes.
-        - Base frequency.
-        - Whether coordinates of this frequency should correspond to the beginning of the period (True)
-          or its end (False). Can only be False when base is Y, Q or M; in other words, xclim assumes frequencies finer
-          than monthly are all start-anchored.
-        - Anchor date for bases "Y" or "Q". As xarray doesn't support "W",
-          neither does xclim (anchor information is lost when given).
+    multiplier: int
+        Multiplier of the base frequency. "[n]W" is always replaced with "[7n]D",
+        as xarray doesn't support "W" for cftime indexes.
+    offset_base: str
+        Base frequency.
+    is_start_anchored: bool
+        Whether coordinates of this frequency should correspond to the beginning of the period (True)
+        or its end (False). Can only be False when base is Y, Q or M; in other words, xclim assumes frequencies finer
+        than monthly are all start-anchored.
+    anchor: str or None
+        Anchor date for bases "Y" or "Q". As xarray doesn't support "W",
+        neither does xclim (anchor information is lost when given).
     """
     # Useful to raise on invalid frequencies, convert Y to A and get default anchor (A, Q)
     offset = pd.tseries.frequencies.to_offset(freq)
@@ -980,11 +983,13 @@ def _doy_days_since_doys(
 
     Returns
     -------
-    tuple of three xr.DataArrays
-        - Day of year for each element in base.
-        - Day of year of the "start" date. The year used is the one the start date would take as a
-          doy for the corresponding base element.
-        - Number of days (maximum doy) for the year of each value in base.
+    base_doy: xr.DataArray
+        Day of year for each element in base.
+    start_doy: xr.DataArray
+        Day of year of the "start" date. The year used is the one the start date would take as a
+        doy for the corresponding base element.
+    doy_max: xr.DataArray
+        Number of days (maximum doy) for the year of each value in base.
     """
     calendar = get_calendar(base)
     base_doy = base.dt.dayofyear

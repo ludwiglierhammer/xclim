@@ -1383,9 +1383,11 @@ def rle_1d(
 
     Returns
     -------
-    tuple of three np.ndarrays
+    values: np.ndarray
         The values taken by arr over each run.
+    run_lengths: xr.DataArray
         The length of each run.
+    start_positions: np.ndarray
         The starting index of each run.
 
     Examples

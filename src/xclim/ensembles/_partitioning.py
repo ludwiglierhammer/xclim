@@ -82,9 +82,11 @@ def hawkins_sutton(
 
     Returns
     -------
-    tuple of xr.DataArray and xr.DataArray
-        The mean relative to the baseline, and the components of variance of the ensemble. These components are
-        coordinates along the "uncertainty" dimension: "variability", "model", "scenario", and "total".
+    xr.DataArray
+        The mean relative to the baseline. The "scenario" and "model" dimensions are averaged out.
+    xr.DataArray
+        The components of variance of the ensemble. The "uncertainty" dimension contains the components:
+        "variability", "model", "scenario", and "total".
 
     Notes
     -----
@@ -215,9 +217,11 @@ def lafferty_sriver(
 
     Returns
     -------
-    tuple of xr.DataArray and xr.DataArray
-        The mean relative to the baseline, and the components of variance of the ensemble. These components are
-        coordinates along the "uncertainty" dimension: "variability", "model", "scenario", "downscaling" and "total".
+    xr.DataArray
+        The mean relative to the baseline. The "scenario" and "model" dimensions are averaged out.
+    xr.DataArray
+        The components of variance of the ensemble. The "uncertainty" dimension contains the components:
+        "variability", "model", "scenario", and "total".
 
     Notes
     -----
@@ -317,10 +321,11 @@ def general_partition(
 
     Returns
     -------
-    tuple of xr.DataArray and xr.DataArray
-        The mean relative to the baseline, and the components of variance of the
-        ensemble. These components are coordinates along the "uncertainty" dimension:
-        element of "var_first", elements of "mean_first" and "total".
+    xr.DataArray
+        The mean relative to the baseline. The "scenario" and "model" dimensions are averaged out.
+    xr.DataArray
+        The components of variance of the ensemble. The "uncertainty" dimension contains the components:
+        "variability", "model", "scenario", and "total".
 
     Notes
     -----

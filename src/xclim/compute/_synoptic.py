@@ -38,9 +38,10 @@ def jetstream_metric_woollings(
 
     Returns
     -------
-    tuple of xarray.DataArray and xarray.DataArray
-        Daily time series of latitude of jetstream [°].
-        Daily time series of strength of jetstream [speed].
+    jetlat: xarray.DataArray, [°]
+        Daily time series of latitude of jetstream.
+    jetstr: xarray.DataArray, [speed]
+        Daily time series of strength of jetstream.
 
     Warnings
     --------

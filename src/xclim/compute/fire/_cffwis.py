@@ -1388,19 +1388,18 @@ def cffwis_indices(
 
     Returns
     -------
-    tuple of six xr.DataArrays
-        DC: xr.DataArray, [dimensionless]
-          The Drought Code.
-        DMC: xr.DataArray, [dimensionless]
-          The Duff Moisture Code.
-        FFMC: xr.DataArray, [dimensionless]
-          The Fine Fuel Moisture Code.
-        ISI: xr.DataArray, [dimensionless]
-          The Initial Spread Index.
-        BUI: xr.DataArray, [dimensionless]
-          The Build Up Index.
-        FWI: xr.DataArray, [dimensionless]
-          The Fire Weather Index.
+    DC: xr.DataArray, [dimensionless]
+        The Drought Code.
+    DMC: xr.DataArray, [dimensionless]
+        The Duff Moisture Code.
+    FFMC: xr.DataArray, [dimensionless]
+        The Fine Fuel Moisture Code.
+    ISI: xr.DataArray, [dimensionless]
+        The Initial Spread Index.
+    BUI: xr.DataArray, [dimensionless]
+        The Build Up Index.
+    FWI: xr.DataArray, [dimensionless]
+        The Fire Weather Index.
 
     Notes
     -----

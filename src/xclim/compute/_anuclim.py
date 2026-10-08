@@ -232,7 +232,7 @@ def tg_mean_warmcold_quarter(
     out = _to_quarter(tas=tas)
 
     if op not in ["warmest", "coldest"]:
-        raise NotImplementedError(f"`op`: {op} may only be one of 'warmest' or 'coldest'")
+        raise NotImplementedError("`op` parameter may only be one of 'warmest' or 'coldest'")
     np_op = _np_ops[op]
 
     return statistics(out, statistic=np_op, freq=freq)
@@ -287,7 +287,7 @@ def tg_mean_wetdry_quarter(
     pr_qrt = _to_quarter(pr=pr)
 
     if op not in ["wettest", "driest", "dryest"]:
-        raise NotImplementedError(f"`op`: {op} may only be one of 'wettest', 'driest' or 'dryest'")
+        raise NotImplementedError("`op` parameter may only be one of 'wettest', 'driest' or 'dryest'")
     xr_op = _xr_argops[op]
 
     out = _from_other_arg(criteria=pr_qrt, output=tas_qrt, op=xr_op, freq=freq)
@@ -344,7 +344,7 @@ def prcptot_wetdry_quarter(
     pr_qrt = _to_quarter(pr=pr)
 
     if op not in ["wettest", "driest", "dryest"]:
-        raise NotImplementedError(f"`op`: {op} may only be one of 'wettest', 'driest' or 'dryest'")
+        raise NotImplementedError("`op` parameter may only be one of 'wettest', 'driest' or 'dryest'")
     np_op = _np_ops[op]
 
     return statistics(pr_qrt, statistic=np_op, freq=freq)
@@ -399,7 +399,7 @@ def prcptot_warmcold_quarter(
     pr_qrt = _to_quarter(pr=pr)
 
     if op not in ["warmest", "coldest"]:
-        raise NotImplementedError(f"`op`: {op} may only be one of 'warmest' or 'coldest'")
+        raise NotImplementedError("`op` parameter may only be one of 'warmest' or 'coldest'")
     xr_op = _xr_argops[op]
 
     out = _from_other_arg(criteria=tas_qrt, output=pr_qrt, op=xr_op, freq=freq)
@@ -474,7 +474,7 @@ def prcptot_wetdry_period(
     pram = rate2amount(pr)
 
     if op not in ["wettest", "driest", "dryest"]:
-        raise NotImplementedError(f"`op`: {op} may only be one of 'wettest' or 'driest'")
+        raise NotImplementedError("`op` parameter may only be one of 'wettest' or 'driest'")
     np_op = _np_ops[op]
 
     pwp: xarray.DataArray = getattr(pram.resample(time=freq), np_op)(dim="time")

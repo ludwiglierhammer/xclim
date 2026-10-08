@@ -229,10 +229,12 @@ def kmeans_reduce_ensemble(
 
     Returns
     -------
-    tuple of list, np.ndarray and dict
-        - Selected model indexes (positions).
-        - KMeans clustering results.
-        - Dictionary of input data for creating R² profile plot. "None" when make_graph=False.
+    list
+        Selected model indexes (positions).
+    np.ndarray
+        KMeans clustering results.
+    dict
+        Dictionary of input data for creating R² profile plot. "None" when make_graph=False.
 
     Notes
     -----

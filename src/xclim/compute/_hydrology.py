@@ -919,9 +919,10 @@ def sen_slope(rivo: xarray.DataArray, freq: Freq = "YS") -> tuple[xarray.DataArr
 
     Returns
     -------
-    tuple of xarray.DataArray and xarray.DataArray
-        Sen's slope estimates [dimensionless].
-        Mann-Kendall metric indicating slope tendency [dimensionless].
+    sen_slope: xarray.DataArray, [dimensionless]
+        Sen's slope estimates.
+    p_value: xarray.DataArray, [dimensionless]
+        Mann-Kendall metric indicating slope tendency.
 
     Notes
     -----
@@ -982,12 +983,16 @@ def sen_slope_ratio(
 
     Returns
     -------
-    tuple of five xarray.DataArrays
-        Sen's slope estimates [dimensionless].
-        Mann-Kendall metric indicating slope tendency [dimensionless].
-        Sen's slope estimates of the simulation dataset [dimensionless].
-        Mann-Kendall metric indicating slope tendency of the simulation dataset [dimensionless].
-        Ratio of the slopes [dimensionless].
+    sen_slope: xarray.DataArrays, [dimensionless]
+        Sen's slope estimates.
+    p_value: xarray.DataArray, [dimensionless]
+        Mann-Kendall metric indicating slope tendency.
+    sen_slope_sim: xarray.DataArray, [dimensionless]
+        Sen's slope estimates of the simulation dataset.
+    p_value_sim: xarray.DataArray, [dimensionless]
+        Mann-Kendall metric indicating slope tendency of the simulation dataset.
+    ratio: xarray.DataArray, [dimensionless]
+        Ratio of the slopes.
 
     Notes
     -----
