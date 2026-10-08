@@ -474,7 +474,7 @@ def _get_gamma(virtual_indexes: np.ndarray, previous_indexes: np.ndarray) -> np.
     Returns
     -------
     np.ndarray
-        Gamma (AKA "m" or "weight") which is necessary for the linear interpolation of quantiles
+        Gamma ("γ": "m" or "weight") which is necessary for the linear interpolation of quantiles.
 
     Notes
     -----
