@@ -163,7 +163,7 @@ def cold_spell_days(
     tas : xarray.DataArray
         Mean daily temperature.
     thresh : Quantified
-        Threshold temperature below which a cold spell begins. Default. "-10 degC".
+        Threshold temperature below which a cold spell begins. Default: "-10 degC".
     window : int
         Minimum number of days with temperature below the threshold to qualify as a cold spell. Default: 5.
     freq : Freq
