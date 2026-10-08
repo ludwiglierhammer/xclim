@@ -7,6 +7,8 @@ This module implements methods and tools meant to partition climate projection u
 
 from __future__ import annotations
 
+from typing import Literal
+
 import numpy as np
 import xarray as xr
 
@@ -57,7 +59,7 @@ def hawkins_sutton(
     sm: xr.DataArray | None = None,
     weights: xr.DataArray | None = None,
     baseline: tuple[str, str] = ("1971", "2000"),
-    kind: str = "+",
+    kind: Literal["+", "*"] = "+",
 ) -> tuple[xr.DataArray, xr.DataArray]:
     """
     Return the mean and partitioned variance of an ensemble based on method from Hawkins & Sutton (2009).
@@ -65,27 +67,30 @@ def hawkins_sutton(
     Parameters
     ----------
     da : xr.DataArray
-        Time series with dimensions 'time', 'scenario' and 'model'.
+        Time series with dimensions "time", "scenario" and "model".
     sm : xr.DataArray, optional
         Smoothed time series over time, with the same dimensions as `da`. By default, this is estimated using a
         4th-order polynomial. Results are sensitive to the choice of smoothing function, use this to set another
         polynomial order, or a LOESS curve.
     weights : xr.DataArray, optional
-        Weights to be applied to individual models. Should have `model` dimension.
-    baseline : (str, str)
+        Weights to be applied to individual models. Should have "model" dimension.
+    baseline : tuple of str and str
         Start and end year of the reference period.
-    kind : {'+', '*'}
+        Default: ("1971", "2000").
+    kind : {"+", "*"}
         Whether the mean over the reference period should be subtracted (+) or divided by (*).
 
     Returns
     -------
-    (xr.DataArray, xr.DataArray)
-        The mean relative to the baseline, and the components of variance of the ensemble. These components are
-        coordinates along the `uncertainty` dimension: `variability`, `model`, `scenario`, and `total`.
+    xr.DataArray
+        The mean relative to the baseline. The "scenario" and "model" dimensions are averaged out.
+    xr.DataArray
+        The components of variance of the ensemble. The "uncertainty" dimension contains the components:
+        "variability", "model", "scenario", and "total".
 
     Notes
     -----
-    To prepare input data, make sure `da` has dimensions `time`, `scenario` and `model`,
+    To prepare input data, make sure `da` has dimensions "time", "scenario" and "model",
     e.g. `da.rename({"scen": "scenario"})`.
 
     To reproduce results from :cite:t:`hawkins_2009`, input data should meet the following requirements:
@@ -160,7 +165,9 @@ def hawkins_sutton(
     return g, uncertainty
 
 
-def hawkins_sutton_09_weighting(da, obs, baseline=("1971", "2000")):
+def hawkins_sutton_09_weighting(
+    da: xr.DataArray, obs: float, baseline: tuple[str, str] = ("1971", "2000")
+) -> xr.DataArray:
     """
     Return weights according to the ability of models to simulate observed climate change.
 
@@ -173,8 +180,8 @@ def hawkins_sutton_09_weighting(da, obs, baseline=("1971", "2000")):
         Input data over the historical period. Should have a time and model dimension.
     obs : float
         Observed change.
-    baseline : (str, str)
-        Baseline start and end year.
+    baseline : tuple of str and str
+        Baseline start and end year. Default: ("1971", "2000").
 
     Returns
     -------
@@ -198,24 +205,27 @@ def lafferty_sriver(
     Parameters
     ----------
     da : xr.DataArray
-        Time series with dimensions 'time', 'scenario', 'downscaling' and 'model'.
-    sm : xr.DataArray
+        Time series with dimensions "time", "scenario", "downscaling" and "model".
+    sm : xr.DataArray, optional
         Smoothed time series over time, with the same dimensions as `da`. By default, this is estimated using a
         4th-order polynomial. Results are sensitive to the choice of smoothing function, use this to set another
         polynomial order, or a LOESS curve.
     bb13 : bool
         Whether to apply the Brekke and Barsugli (2013) method to estimate scenario uncertainty, where the variance
         over scenarios is computed before taking the mean over models and downscaling methods.
+        Default: False.
 
     Returns
     -------
-    xr.DataArray, xr.DataArray
-        The mean relative to the baseline, and the components of variance of the ensemble. These components are
-        coordinates along the `uncertainty` dimension: `variability`, `model`, `scenario`, `downscaling` and `total`.
+    xr.DataArray
+        The mean relative to the baseline. The "scenario" and "model" dimensions are averaged out.
+    xr.DataArray
+        The components of variance of the ensemble. The "uncertainty" dimension contains the components:
+        "variability", "model", "scenario", and "total".
 
     Notes
     -----
-    To prepare input data, make sure `da` has dimensions `time`, `scenario`, `downscaling` and `model`,
+    To prepare input data, make sure `da` has dimensions "time", "scenario", "downscaling" and "model",
     e.g. `da.rename({"experiment": "scenario"})`.
 
     To get the fraction of the total variance instead of the variance itself, call `fractional_uncertainty` on the
@@ -281,10 +291,10 @@ def lafferty_sriver(
 
 def general_partition(
     da: xr.DataArray,
-    sm: xr.DataArray | str = "poly",
-    var_first: list | None = None,
-    mean_first: list | None = None,
-    weights: list | None = None,
+    sm: xr.DataArray | Literal["poly"] = "poly",
+    var_first: list[str] | None = None,
+    mean_first: list[str] | None = None,
+    weights: list[str] | None = None,
 ) -> tuple[xr.DataArray, xr.DataArray]:
     """
     Return the mean and partitioned variance of an ensemble.
@@ -295,26 +305,27 @@ def general_partition(
     Parameters
     ----------
     da : xr.DataArray
-        Time series with dimensions 'time', 'mean_first', and 'var_first'.
+        Time series with dimensions "time", "mean_first", and "var_first".
     sm : xr.DataArray or {"poly"}
         Smoothed time series over time, with the same dimensions as `da`.
-        If 'poly', this is estimated using a 4th-order polynomial.
+        If "poly", this is estimated using a 4th-order polynomial.
         It is also possible to pass a precomputed smoothed time series.
-    var_first : list of str
+    var_first : list of str, optional
         List of dimensions where the variance is computed first of the dimension,
         followed by the mean over the other dimensions.
-    mean_first : list of str
+    mean_first : list of str, optional
         List of dimensions where the mean over the other dimensions is computed first,
         followed by the variance over the dimension.
-    weights : list of str
+    weights : list of str, optional
         List of dimensions where the first operation is weighted.
 
     Returns
     -------
-    xr.DataArray, xr.DataArray
-        The mean relative to the baseline, and the components of variance of the
-        ensemble. These components are coordinates along the `uncertainty` dimension:
-        element of var_first, elements of mean_first and `total`.
+    xr.DataArray
+        The mean relative to the baseline. The "scenario" and "model" dimensions are averaged out.
+    xr.DataArray
+        The components of variance of the ensemble. The "uncertainty" dimension contains the components:
+        "variability", "model", "scenario", and "total".
 
     Notes
     -----
